@@ -635,10 +635,17 @@ body {
   position: relative;
 }
 
-.custom-photo img {
+.polaroid-img-placeholder img {
   width: 100%;
   height: 100%;
   object-fit: contain;
+  border-radius: 2px;
+}
+
+.custom-photo img.only-this {
+  width: 100%;
+  height: 100%;
+  object-fit: fill;
   border-radius: 2px;
 }
 

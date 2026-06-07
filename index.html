@@ -1,47 +1,33 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description"
-    content="RUKHSAT - A nostalgic scrapbook of memories, videos, and heartfelt messages for our college farewell. Relive the golden times.">
-  <title>Rukhsat — The Farewell '26</title>
-
-  <!-- Google Fonts -->
+  <meta name="description" content="RUKHSAT - College farewell scrapbook.">
+  <title>Rukhsat — The Farewell '26 (Home)</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link
-    href="https://fonts.googleapis.com/css2?family=Caveat:wght@400..700&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Inter:wght@300;400;500;600&family=Playfair+Display:ital,wght@0,400..900;1,400..900&display=swap"
-    rel="stylesheet">
-
-  <!-- CSS Stylesheet -->
+  <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@400..700&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Inter:wght@300;400;500;600&family=Playfair+Display:ital,wght@0,400..900;1,400..900&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="styles.css">
 </head>
-
 <body>
-
-  <!-- Film Grain & Vintage Overlays -->
   <div class="film-grain"></div>
   <div class="vignette"></div>
 
-  <!-- Background Music Audio Tag -->
-  <audio id="bg-audio" loop data-track-title="Woh Din">
+  <audio id="bg-audio" loop autoplay data-track-title="Woh Din">
     <source src="audio/woh_din.mp3" type="audio/mpeg">
   </audio>
 
-  <!-- Navigation Bar -->
   <header class="navbar">
     <div class="logo">IT Farewell'26</div>
     <nav class="nav-links">
-      <a href="#hero" class="active">Home</a>
-      <a href="#video-vault">Video Vault</a>
+      <a href="index.html" class="active">Home</a>
+      <a href="photo-vault.html">Photo Vault</a>
+      <a href="video-vault.html">Video Vault</a>
     </nav>
     <div class="header-actions">
-      <!-- Minimalist Tape Player Trigger -->
       <button class="music-toggle-btn" id="music-quick-btn" title="Toggle Background Music">
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-          class="music-icon paused">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="music-icon paused">
           <path d="M9 18V5l12-2v13"></path>
           <circle cx="6" cy="18" r="3"></circle>
           <circle cx="18" cy="16" r="3"></circle>
@@ -51,94 +37,10 @@
     </div>
   </header>
 
-  <!-- Floating Retro Tape Cassette Player (Interactive Widget) -->
-  <div class="cassette-widget" id="cassette-player">
-    <div class="cassette-body">
-      <div class="cassette-screws screw-tl"></div>
-      <div class="cassette-screws screw-tr"></div>
-      <div class="cassette-screws screw-bl"></div>
-      <div class="cassette-screws screw-br"></div>
-
-      <div class="cassette-label">
-        <div class="label-header">
-          <span>SIDE A</span>
-          <span class="label-title">Rukhsat — Class of '26</span>
-          <span>90 Min</span>
-        </div>
-
-        <div class="cassette-window">
-          <!-- Left Reel -->
-          <div class="reel reel-left">
-            <div class="spoke spoke-1"></div>
-            <div class="spoke spoke-2"></div>
-            <div class="spoke spoke-3"></div>
-          </div>
-
-          <!-- Moving Tape Shadow -->
-          <div class="tape-shadow"></div>
-
-          <!-- Right Reel -->
-          <div class="reel reel-right">
-            <div class="spoke spoke-1"></div>
-            <div class="spoke spoke-2"></div>
-            <div class="spoke spoke-3"></div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Cassette Bottom Details -->
-      <div class="cassette-bottom">
-        <div class="bottom-trapezoid"></div>
-        <div class="bottom-dots"></div>
-      </div>
-    </div>
-
-    <!-- Player Controls -->
-    <div class="player-controls">
-      <button class="ctrl-btn" id="play-btn" title="Play/Pause">
-        <svg viewBox="0 0 24 24" fill="currentColor" class="play-svg">
-          <polygon points="5 3 19 12 5 21 5 3"></polygon>
-        </svg>
-        <svg viewBox="0 0 24 24" fill="currentColor" class="pause-svg hidden">
-          <rect x="6" y="4" width="4" height="16"></rect>
-          <rect x="14" y="4" width="4" height="16"></rect>
-        </svg>
-      </button>
-      <div class="track-info">
-        <div class="track-title-ticker">
-          <div class="ticker-text">Now Playing: Nostalgic Acoustic Lounge (Soft Instrumental)</div>
-        </div>
-        <div class="track-time">0:00</div>
-      </div>
-      <button class="ctrl-btn" id="mute-btn" title="Mute/Unmute">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="unmute-svg">
-          <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
-          <path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"></path>
-        </svg>
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="mute-svg hidden">
-          <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
-          <line x1="23" y1="9" x2="17" y2="15"></line>
-          <line x1="17" y1="9" x2="23" y2="15"></line>
-        </svg>
-      </button>
-      <button class="ctrl-btn close-btn" id="close-player-btn" title="Close player controls" aria-label="Close player controls">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          <line x1="18" y1="6" x2="6" y2="18"></line>
-          <line x1="6" y1="6" x2="18" y2="18"></line>
-        </svg>
-      </button>
-    </div>
-    <div class="widget-toggle" id="toggle-widget-btn" title="Show/Hide Tape Player">
-      <span>📼 Farewell Tape Player</span>
-    </div>
-  </div>
-
-  <!-- Hero Section -->
   <section class="hero-section" id="hero">
     <div class="scrapbook-page hero-card">
       <div class="tape-sticker sticker-top-left"></div>
       <div class="tape-sticker sticker-top-right"></div>
-
       <div class="hero-intro">
         <span class="retro-badge">A Digital Scrapbook</span>
         <h1 class="hero-title">Rukhsat</h1>
@@ -149,130 +51,38 @@
         </p>
       </div>
 
-      <!-- Polaroid Stack Showcase -->
       <div class="polaroid-stack-container">
         <div class="showcase-polaroid polaroid-1">
-          <div class="polaroid-img-placeholder custom-photo">
-            <img src="images/semester1.jpg" alt="Semester 1 Memory">
-          </div>
+          <div class="polaroid-img-placeholder custom-photo"><img src="images/semester1.jpg" alt="Semester 1 Memory"></div>
           <p class="polaroid-caption">Where it all began.</p>
         </div>
         <div class="showcase-polaroid polaroid-2">
-          <div class="polaroid-img-placeholder" style="background-image: linear-gradient(135deg, #7c3d49, #4a152b)">
-            <span class="doodle-text">The Squad</span>
-          </div>
+          <div class="polaroid-img-placeholder custom-photo"><img src="images/semester1.jpg" alt="Semester 1 Memory"></div>
           <p class="polaroid-caption">Tea Stall Debates.</p>
         </div>
         <div class="showcase-polaroid polaroid-3">
-          <div class="polaroid-img-placeholder" style="background-image: linear-gradient(135deg, #6b7a67, #3e4a3c)">
-            <span class="doodle-text">Farewell '26</span>
-          </div>
+          <div class="polaroid-img-placeholder custom-photo"><img src="images/farewell'26.png" alt="Farewell'26" class="only-this"></div>
           <p class="polaroid-caption">Never goodbye.</p>
         </div>
       </div>
 
-      <!-- Quick College Stats Counter -->
       <div class="stats-row">
-        <div class="stat-item">
-          <span class="stat-number">4</span>
-          <span class="stat-label">Years of Joy</span>
-        </div>
+        <div class="stat-item"><span class="stat-number">4</span><span class="stat-label">Years of Joy</span></div>
         <div class="stat-divider"></div>
-        <div class="stat-item">
-          <span class="stat-number">8</span>
-          <span class="stat-label">Semesters Passed</span>
-        </div>
+        <div class="stat-item"><span class="stat-number">8</span><span class="stat-label">Semesters Passed</span></div>
         <div class="stat-divider"></div>
-        <div class="stat-item">
-          <span class="stat-number">48+</span>
-          <span class="stat-label">Subjects Survived</span>
-        </div>
+        <div class="stat-item"><span class="stat-number">48+</span><span class="stat-label">Subjects Survived</span></div>
         <div class="stat-divider"></div>
-        <div class="stat-item">
-          <span class="stat-number">∞</span>
-          <span class="stat-label">Golden Memories</span>
-        </div>
+        <div class="stat-item"><span class="stat-number">∞</span><span class="stat-label">Golden Memories</span></div>
       </div>
-
-      <a href="#video-vault" class="scroll-down-indicator">
-        <span class="scroll-text">Open the Archives</span>
-        <svg class="scroll-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          <polyline points="6 9 12 15 18 9"></polyline>
-        </svg>
-      </a>
     </div>
   </section>
 
-  <!-- Video Vault Section -->
-  <section class="video-vault-section" id="video-vault">
-    <div class="section-header">
-      <h2 class="section-title">The Video Vault</h2>
-      <p class="section-desc">Tune into our moments in motion. Handpicked memories from our shared journey.</p>
-    </div>
+  <footer class="footer">
+    <p class="footer-text">Rukhsat © Class of 2026. Made with ❤️, tea, and lots of memories.</p>
+    <p class="footer-subtext">Designed to live forever on the web.</p>
+  </footer>
 
-    <!-- Search & Filters Container -->
-    <div class="vault-controls">
-      <div class="search-wrapper">
-        <input type="text" id="video-search" placeholder="Search the archives (e.g. 'canteen', 'dance')...">
-        <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          <circle cx="11" cy="11" r="8"></circle>
-          <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
-        </svg>
-      </div>
-
-      <div class="filter-bar">
-        <button class="filter-btn active" data-category="all">All Reels</button>
-        <button class="filter-btn" data-category="campus">Campus Life</button>
-        <button class="filter-btn" data-category="classroom">Classrooms & Pranks</button>
-        <button class="filter-btn" data-category="fests">Fests & Culturals</button>
-        <button class="filter-btn" data-category="hostel">Hostel Diaries</button>
-        <button class="filter-btn" data-category="messages">Warm Wishes</button>
-      </div>
-    </div>
-
-    <!-- Videos Grid -->
-    <div class="video-grid" id="video-grid-container">
-      <!-- Dynamically filled by app.js -->
-    </div>
-
-    <!-- Video Cinema Fullscreen Modal -->
-    <div class="cinema-modal hidden" id="video-modal">
-      <div class="cinema-backdrop"></div>
-      <div class="cinema-container">
-        <button class="cinema-close-btn" id="modal-close-btn" title="Close Theater Mode">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <line x1="18" y1="6" x2="6" y2="18"></line>
-            <line x1="6" y1="6" x2="18" y2="18"></line>
-          </svg>
-        </button>
-
-        <!-- Video Screen Frame -->
-        <div class="vintage-screen-frame">
-          <div class="screen-glare"></div>
-          <div class="iframe-container">
-            <!-- Google Drive embed iframe gets injected here by JS -->
-            <iframe id="modal-iframe" src="" allow="autoplay" allowfullscreen></iframe>
-          </div>
-        </div>
-
-        <div class="cinema-details">
-          <span class="cinema-badge" id="modal-category">Campus Life</span>
-          <h3 class="cinema-title" id="modal-title">The Late Night Chai Chronicles</h3>
-          <p class="cinema-desc" id="modal-desc">Reliving those late-night walks to the main gate for a hot cup of tea
-            during exams.</p>
-        </div>
-      </div>
-    </div>
-
-    <!-- Footer -->
-    <footer class="footer">
-      <p class="footer-text">Rukhsat © Class of 2026. Made with ❤️, tea, and lots of memories.</p>
-      <p class="footer-subtext">Designed to live forever on the web.</p>
-    </footer>
-
-    <!-- Scripts -->
-    <script src="videos.js"></script>
-    <script src="app.js"></script>
+  <script src="app.js"></script>
 </body>
-
 </html>
