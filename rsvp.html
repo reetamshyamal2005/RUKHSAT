@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Rukhsat — Senior RSVP Desk</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@400..700&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Inter:wght@300;400;500;600&family=Playfair+Display:ital,wght@0,400..900;1,400..900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="film-grain"></div>
+  <div class="vignette"></div>
+
+  <audio id="bg-audio" loop autoplay data-track-title="Woh Din">
+    <source src="audio/woh_din.mp3" type="audio/mpeg">
+  </audio>
+
+  <header class="navbar">
+    <div class="logo">IT Farewell'26</div>
+    <nav class="nav-links">
+      <a href="index.html">Home</a>
+      <a href="photo-vault.html">Photo Vault</a>
+      <a href="video-vault.html">Video Vault</a>
+    </nav>
+    <div class="header-actions">
+      <button class="music-toggle-btn" id="music-quick-btn" title="Toggle Background Music">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="music-icon paused">
+          <path d="M9 18V5l12-2v13"></path>
+          <circle cx="6" cy="18" r="3"></circle>
+          <circle cx="18" cy="16" r="3"></circle>
+        </svg>
+        <span class="music-status-text">Play Soundtrack</span>
+      </button>
+    </div>
+  </header>
+
+  <section class="rsvp-section" style="padding-top: 130px; min-height: 90vh;">
+    <div class="section-header">
+      <h2 class="section-title">The Senior RSVP Desk</h2>
+      <p class="section-desc">Claim your reservation for the farewell night. Please search and select your name to verify.</p>
+    </div>
+
+    <div class="rsvp-container">
+      <div class="scrapbook-page rsvp-card">
+        <div class="tape-sticker sticker-top-left"></div>
+        <div class="tape-sticker sticker-top-right"></div>
+        
+        <form id="rsvp-form" class="rsvp-flow-form">
+          <!-- Step 1: Student Lookup -->
+          <div class="rsvp-step" id="step-lookup">
+            <h3 class="step-title"><span class="step-num">01.</span> Find Your Name</h3>
+            <p class="step-instruction">Begin typing your name as listed in the class database.</p>
+            <div class="search-wrapper lookup-wrapper">
+              <input type="text" id="student-search-input" placeholder="Enter your name..." autocomplete="off">
+              <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+              <div id="autocomplete-dropdown" class="autocomplete-dropdown hidden"></div>
+            </div>
+            <div id="selected-student-pill" class="selected-student-pill hidden">
+              <span class="student-pill-name">Selected: Reetam Shyamal</span>
+              <button type="button" id="clear-student-btn" class="clear-pill-btn">&times;</button>
+            </div>
+          </div>
+
+          <!-- Step 2: Attendance Details -->
+          <div class="rsvp-step locked" id="step-details">
+            <h3 class="step-title"><span class="step-num">02.</span> Will you join us?</h3>
+            <p class="step-instruction">Confirm your attendance and select your meal preference.</p>
+            
+            <div class="rsvp-choices-grid">
+              <div class="choice-card attendance-card" data-val="confirmed">
+                <div class="choice-box"></div>
+                <div class="choice-content">
+                  <h4 class="choice-title">Yes, Count Me In!</h4>
+                  <p class="choice-subtitle">I'll be there to celebrate and walk down memory lane.</p>
+                </div>
+              </div>
+              <div class="choice-card attendance-card" data-val="declined">
+                <div class="choice-box"></div>
+                <div class="choice-content">
+                  <h4 class="choice-title">No, I Can't Make It</h4>
+                  <p class="choice-subtitle">I won't be able to attend, but my heart is with you all.</p>
+                </div>
+              </div>
+            </div>
+
+            <div id="food-preference-section" class="food-preference-section hidden">
+              <h4 class="food-section-title">Select Food Preference</h4>
+              <div class="rsvp-choices-grid small-choices">
+                <div class="choice-card food-card active" data-val="veg">
+                  <div class="choice-box"></div>
+                  <div class="choice-content">
+                    <h5 class="choice-title">Vegetarian</h5>
+                  </div>
+                </div>
+                <div class="choice-card food-card" data-val="non-veg">
+                  <div class="choice-box"></div>
+                  <div class="choice-content">
+                    <h5 class="choice-title">Non-Vegetarian</h5>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Step 3: Magic Verification link -->
+          <div class="rsvp-step locked" id="step-verify">
+            <h3 class="step-title"><span class="step-num">03.</span> Verification</h3>
+            <p class="step-instruction" id="verification-text">We will send a one-click magic link to your registered email address.</p>
+            
+            <div class="verify-email-display" id="email-display-container">
+              <span class="email-label">Registered Email:</span>
+              <span class="email-value" id="student-email-masked">ree***@gmail.com</span>
+            </div>
+            
+            <button type="submit" class="submit-pin-btn rsvp-submit-btn" id="rsvp-submit-btn" disabled>
+              Send Magic Verification Link
+            </button>
+          </div>
+        </form>
+
+        <!-- Loading & Success states -->
+        <div id="rsvp-status-overlay" class="rsvp-overlay hidden">
+          <div class="status-box">
+            <div class="loader-spinner"></div>
+            <h4 class="status-title">Sending Verification Link...</h4>
+            <p class="status-desc">Connecting to the database and sending mail via SMTP.</p>
+          </div>
+        </div>
+
+        <div id="rsvp-success-overlay" class="rsvp-overlay hidden">
+          <div class="status-box success-box">
+            <div class="success-seal">✓</div>
+            <h4 class="status-title scribble">"Verification Sent!"</h4>
+            <p class="status-desc">We have sent a one-click magic verification link to your registered email address.</p>
+            <p class="status-subdesc">Please open your inbox, click the verification link, and your invitation card along with your entry QR code will be emailed to you immediately.</p>
+            <a href="index.html" class="filter-btn active" style="margin-top: 25px; display: inline-block;">Return Home</a>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <footer class="footer">
+    <p class="footer-text">Rukhsat © Class of 2026. Made with ❤️, tea, and lots of memories.</p>
+    <p class="footer-subtext">Designed to live forever on the web.</p>
+  </footer>
+
+  <script src="app.js"></script>
+  <script src="rsvp.js"></script>
+</body>
+</html>

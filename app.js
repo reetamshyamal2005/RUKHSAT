@@ -102,6 +102,7 @@ document.addEventListener('DOMContentLoaded', () => {
   // 3. VIDEO LOUNGE RENDERING & FILTERS
   // ==========================================
   const gridContainer = document.getElementById('video-grid-container');
+  const photoGridContainer = document.getElementById('photo-grid-container');
   const searchInput = document.getElementById('video-search');
   const filterBtns = document.querySelectorAll('.filter-btn');
   
@@ -151,18 +152,90 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // Check if VIDEO_DATABASE exists before rendering
-  if (typeof VIDEO_DATABASE !== 'undefined' && gridContainer) {
-    renderVideos(VIDEO_DATABASE);
+  function renderPhotos(photosArray) {
+    if (!photoGridContainer) return;
+    photoGridContainer.innerHTML = '';
+
+    if (photosArray.length === 0) {
+      photoGridContainer.innerHTML = `<div class="no-results-message"><p class="scribble" style="font-size: 2.2rem; text-align: center; grid-column: 1 / -1; width: 100%; color: var(--rose-burgundy);">"No captured photos found yet..."</p></div>`;
+      return;
+    }
+
+    photosArray.forEach((photo, index) => {
+      const card = document.createElement('div');
+      card.className = 'polaroid-card';
+      
+      card.innerHTML = `
+        <div class="tape-sticker" style="top: -14px; left: 50%; transform: translateX(-50%) rotate(${index % 2 === 0 ? '-2' : '2'}deg); width: 85px; height: 26px;"></div>
+        <div class="video-thumbnail-container">
+          <img src="${photo.url}" alt="${photo.title}" class="video-thumbnail" style="filter: sepia(0.15) contrast(1.05); object-fit: cover;" loading="lazy">
+          <div class="play-overlay" style="opacity: 0; background: rgba(124, 61, 73, 0.4);"><span class="scribble" style="color: white; font-size: 1.5rem;">View Photo</span></div>
+        </div>
+        <div class="polaroid-body">
+          <span class="polaroid-cat-tag">${photo.category}</span>
+          <h4 class="polaroid-card-title">${photo.title}</h4>
+          <p class="polaroid-card-desc">${photo.description}</p>
+        </div>
+      `;
+      card.addEventListener('click', () => openPhotoModal(photo));
+      photoGridContainer.appendChild(card);
+    });
+  }
+
+  let activeMediaDatabase = [];
+
+  function loadMedia() {
+    if (!gridContainer && !photoGridContainer) return;
+
+    fetch('/api/media')
+      .then(res => {
+        if (!res.ok) throw new Error('API failed');
+        return res.json();
+      })
+      .then(data => {
+        if (gridContainer) {
+          const videosOnly = data.filter(item => item.type === 'video');
+          if (videosOnly.length > 0) {
+            activeMediaDatabase = videosOnly;
+          } else if (typeof VIDEO_DATABASE !== 'undefined') {
+            activeMediaDatabase = VIDEO_DATABASE;
+          } else {
+            activeMediaDatabase = [];
+          }
+          renderVideos(activeMediaDatabase);
+        } else if (photoGridContainer) {
+          const photosOnly = data.filter(item => item.type === 'photo');
+          renderPhotos(photosOnly);
+        }
+      })
+      .catch(err => {
+        console.warn('API error, falling back to static database:', err);
+        if (gridContainer) {
+          if (typeof VIDEO_DATABASE !== 'undefined') {
+            activeMediaDatabase = VIDEO_DATABASE;
+          } else {
+            activeMediaDatabase = [];
+          }
+          renderVideos(activeMediaDatabase);
+        } else if (photoGridContainer) {
+          renderPhotos([]);
+        }
+      });
+  }
+
+  // Load initial media
+  if (gridContainer || photoGridContainer) {
+    loadMedia();
   }
 
   function handleFilterChange() {
-    if (!searchInput || typeof VIDEO_DATABASE === 'undefined') return;
+    if (!searchInput) return;
     const searchQuery = searchInput.value.toLowerCase();
     const activeCategoryBtn = document.querySelector('.filter-btn.active');
+    if (!activeCategoryBtn) return;
     const selectedCategory = activeCategoryBtn.getAttribute('data-category');
 
-    const filteredList = VIDEO_DATABASE.filter(video => {
+    const filteredList = activeMediaDatabase.filter(video => {
       const matchesSearch = video.title.toLowerCase().includes(searchQuery) || video.description.toLowerCase().includes(searchQuery);
       const matchesCategory = selectedCategory === 'all' || video.category === selectedCategory;
       return matchesSearch && matchesCategory;
@@ -238,9 +311,42 @@ document.addEventListener('DOMContentLoaded', () => {
   const backdrop = document.querySelector('.cinema-backdrop');
   if (backdrop) backdrop.addEventListener('click', closeVideoModal);
 
+  // Photo modal elements and events
+  const photoModal = document.getElementById('photo-modal');
+  const photoModalImg = document.getElementById('photo-modal-img');
+  const photoModalClose = document.getElementById('photo-modal-close-btn');
+  const photoModalCat = document.getElementById('photo-modal-category');
+  const photoModalTitle = document.getElementById('photo-modal-title');
+  const photoModalDesc = document.getElementById('photo-modal-desc');
+
+  function openPhotoModal(photo) {
+    if (!photoModal) return;
+    if (photoModalCat) photoModalCat.textContent = photo.category;
+    if (photoModalTitle) photoModalTitle.textContent = photo.title;
+    if (photoModalDesc) photoModalDesc.textContent = photo.description;
+    if (photoModalImg) photoModalImg.src = photo.url;
+    photoModal.classList.remove('hidden');
+    document.body.style.overflow = 'hidden';
+  }
+
+  function closePhotoModal() {
+    if (!photoModal) return;
+    photoModal.classList.add('hidden');
+    document.body.style.overflow = 'auto';
+  }
+
+  if (photoModalClose) photoModalClose.addEventListener('click', closePhotoModal);
+  const photoBackdrop = photoModal?.querySelector('.cinema-backdrop');
+  if (photoBackdrop) photoBackdrop.addEventListener('click', closePhotoModal);
+
   document.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape' && modal && !modal.classList.contains('hidden')) {
-      closeVideoModal();
+    if (e.key === 'Escape') {
+      if (modal && !modal.classList.contains('hidden')) {
+        closeVideoModal();
+      }
+      if (photoModal && !photoModal.classList.contains('hidden')) {
+        closePhotoModal();
+      }
     }
   });
 });

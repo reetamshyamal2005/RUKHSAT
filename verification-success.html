@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Rukhsat — Verification Successful</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@400..700&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Inter:wght@300;400;500;600&family=Playfair+Display:ital,wght@0,400..900;1,400..900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="film-grain"></div>
+  <div class="vignette"></div>
+
+  <audio id="bg-audio" loop autoplay data-track-title="Woh Din">
+    <source src="audio/woh_din.mp3" type="audio/mpeg">
+  </audio>
+
+  <header class="navbar">
+    <div class="logo">IT Farewell'26</div>
+    <nav class="nav-links">
+      <a href="index.html">Home</a>
+      <a href="photo-vault.html">Photo Vault</a>
+      <a href="video-vault.html">Video Vault</a>
+    </nav>
+    <div class="header-actions">
+      <button class="music-toggle-btn" id="music-quick-btn" title="Toggle Background Music">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="music-icon paused">
+          <path d="M9 18V5l12-2v13"></path>
+          <circle cx="6" cy="18" r="3"></circle>
+          <circle cx="18" cy="16" r="3"></circle>
+        </svg>
+        <span class="music-status-text">Play Soundtrack</span>
+      </button>
+    </div>
+  </header>
+
+  <section class="rsvp-success-section" style="padding-top: 150px; min-height: 85vh; display: flex; align-items: center; justify-content: center;">
+    <div class="rsvp-container" style="max-width: 650px;">
+      <div class="scrapbook-page success-card-full" style="text-align: center;">
+        <div class="tape-sticker sticker-top-left"></div>
+        <div class="tape-sticker sticker-top-right"></div>
+        
+        <div class="success-seal" style="width: 70px; height: 70px; font-size: 2.5rem; margin-bottom: 2rem;">✓</div>
+        
+        <h2 class="section-title scribble" style="font-size: 3rem; color: var(--rose-burgundy); margin-bottom: 1rem;">"Verified!"</h2>
+        <h3 class="card-headline" style="font-size: 1.5rem; font-weight: 600; margin-bottom: 1.5rem;">Your RSVP is Completed.</h3>
+        
+        <p class="status-desc" style="font-size: 1.05rem; line-height: 1.6; margin-bottom: 1.5rem;">
+          Thank you for confirming! Your verification is successful. We have emailed your **Invitation Card** and a **personalized Entry QR code** to your inbox.
+        </p>
+        
+        <div class="showcase-polaroid polaroid-2" style="margin: 2rem auto; width: 220px; float: none;">
+          <div class="polaroid-img-placeholder"><img src="images/farewell'26.png" alt="Farewell memory"></div>
+          <p class="polaroid-caption">See you there!</p>
+        </div>
+
+        <p class="status-subdesc" style="font-size: 0.9rem; color: var(--text-muted); border-top: 1px dashed var(--border-sepia); padding-top: 1.5rem;">
+          Note: If you don't receive the email within a couple of minutes, please check your **Spam / Promos** folder.
+        </p>
+
+        <div style="margin-top: 2rem;">
+          <a href="index.html" class="filter-btn active" style="padding: 0.8rem 2rem; font-size: 0.95rem;">Back to Memories Hub</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <footer class="footer">
+    <p class="footer-text">Rukhsat © Class of 2026. Made with ❤️, tea, and lots of memories.</p>
+    <p class="footer-subtext">Designed to live forever on the web.</p>
+  </footer>
+
+  <script src="app.js"></script>
+</body>
+</html>

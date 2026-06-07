@@ -36,15 +36,43 @@
     </div>
   </header>
 
-  <section class="photo-vault-section" style="padding: 180px 4rem 4rem 4rem; min-height: 80vh; text-align: center;">
-    <h2 class="section-title">The Photo Vault</h2>
-    <p class="section-desc">Our captured memories will be displayed here soon...</p>
+  <section class="photo-vault-section" id="photo-vault" style="padding-top: 130px; min-height: 85vh;">
+    <div class="section-header">
+      <h2 class="section-title">The Photo Vault</h2>
+      <p class="section-desc">Snapshots of our journey. Captured moments frozen in time.</p>
+    </div>
+
+    <div class="video-grid" id="photo-grid-container"></div>
+
+    <!-- Cinematic Photo modal viewer -->
+    <div class="cinema-modal hidden" id="photo-modal">
+      <div class="cinema-backdrop"></div>
+      <div class="cinema-container" style="max-width: 800px;">
+        <button class="cinema-close-btn" id="photo-modal-close-btn" title="Close Photo Viewer"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg></button>
+        <div class="vintage-screen-frame">
+          <div class="screen-glare"></div>
+          <div style="width: 100%; display: flex; justify-content: center; align-items: center; background: #111; padding: 20px;">
+            <img id="photo-modal-img" src="" alt="" style="max-width: 100%; max-height: 65vh; object-fit: contain; border: 2px solid white; box-shadow: 0 0 25px rgba(0,0,0,0.85);">
+          </div>
+        </div>
+        <div class="cinema-details">
+          <span class="cinema-badge" id="photo-modal-category">Campus Life</span>
+          <h3 class="cinema-title" id="photo-modal-title"></h3>
+          <p class="cinema-desc" id="photo-modal-desc"></p>
+        </div>
+      </div>
+    </div>
   </section>
 
   <footer class="footer">
     <p class="footer-text">Rukhsat © Class of 2026. Made with ❤️, tea, and lots of memories.</p>
     <p class="footer-subtext">Designed to live forever on the web.</p>
   </footer>
+
+  <a href="rsvp.html" class="floating-rsvp-btn" id="rsvp-float">
+    <div class="rsvp-btn-seal">RSVP</div>
+    <span class="rsvp-btn-text">Get Your Reservation</span>
+  </a>
 
   <script src="app.js"></script>
 </body>

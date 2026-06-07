@@ -1,0 +1,718 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Rukhsat — Admin Memory Console</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@400..700&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Inter:wght@300;400;500;600&family=Playfair+Display:ital,wght@0,400..900;1,400..900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    .admin-container {
+      max-width: 700px;
+      margin: 4rem auto;
+      width: 100%;
+    }
+    .admin-form-card {
+      padding: 3rem;
+    }
+    .admin-title {
+      font-family: var(--font-title);
+      font-size: 2.2rem;
+      color: var(--text-charcoal);
+      text-align: center;
+      margin-bottom: 2rem;
+    }
+    .progress-bar-container {
+      width: 100%;
+      height: 12px;
+      background: var(--sage-green-light);
+      border: 1px solid var(--border-sepia);
+      border-radius: 6px;
+      overflow: hidden;
+      margin: 15px 0;
+      display: none;
+    }
+    .progress-bar-fill {
+      height: 100%;
+      width: 0%;
+      background: var(--rose-burgundy);
+      transition: width 0.2s ease;
+    }
+    .status-text {
+      font-size: 0.9rem;
+      color: var(--text-muted);
+      font-style: italic;
+      text-align: center;
+    }
+    .admin-list-container {
+      margin-top: 2.2rem;
+      max-height: 250px;
+      overflow-y: auto;
+      border: 1.5px solid var(--border-sepia);
+      background: var(--bg-linen);
+      border-radius: 6px;
+      padding: 0.5rem;
+    }
+    .admin-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.85rem;
+      text-align: left;
+    }
+    .admin-table th {
+      background: var(--sage-green-light);
+      color: var(--text-charcoal);
+      font-weight: 600;
+      padding: 8px;
+      border-bottom: 2px solid var(--border-sepia);
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+    .admin-table td {
+      padding: 8px;
+      border-bottom: 1px solid var(--border-sepia);
+      vertical-align: middle;
+      color: var(--text-charcoal);
+    }
+    .admin-table tr:hover {
+      background: rgba(124, 61, 73, 0.05);
+    }
+    .btn-delete {
+      background: #7c3d49;
+      color: white;
+      border: none;
+      padding: 4px 8px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 0.75rem;
+      transition: background 0.2s ease;
+    }
+    .btn-delete:hover {
+      background: #c33c54;
+    }
+    .btn-refresh {
+      background: var(--sage-green);
+      color: white;
+      border: none;
+      padding: 6px 14px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 0.85rem;
+      margin-bottom: 1rem;
+      transition: opacity 0.2s ease;
+    }
+    .btn-refresh:hover {
+      opacity: 0.9;
+    }
+    .media-thumbnail-mini {
+      width: 40px;
+      height: 40px;
+      object-fit: cover;
+      border-radius: 4px;
+      border: 1px solid var(--border-sepia);
+    }
+  </style>
+</head>
+<body>
+  <div class="film-grain"></div>
+  <div class="vignette"></div>
+
+  <header class="navbar">
+    <div class="logo">IT Farewell'26</div>
+    <nav class="nav-links">
+      <a href="index.html">Home</a>
+      <a href="photo-vault.html">Photo Vault</a>
+      <a href="video-vault.html">Video Vault</a>
+    </nav>
+  </header>
+
+  <section class="admin-section" style="padding-top: 130px; min-height: 85vh;">
+    <div class="admin-container">
+      <div class="scrapbook-page admin-form-card">
+        <div class="tape-sticker sticker-top-left"></div>
+        <div class="tape-sticker sticker-top-right"></div>
+
+        <h2 class="admin-title">Admin Memory Console</h2>
+        <p class="step-instruction" style="text-align: center; margin-bottom: 2rem;">Upload new farewell photos or video reels directly to Backblaze B2.</p>
+
+        <form id="admin-upload-form" class="guestbook-form">
+          <div class="form-group">
+            <label for="admin-secret">Admin Secret Key</label>
+            <input type="password" id="admin-secret" placeholder="Enter ADMIN_SECRET..." required>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label for="media-title">Memory Title</label>
+              <input type="text" id="media-title" placeholder="e.g. Canteen Adda" required>
+            </div>
+            <div class="form-group">
+              <label for="media-category">Category</label>
+              <select id="media-category" style="padding: 0.8rem; border: 1.5px solid var(--border-sepia); border-radius: 4px; background-color: var(--bg-linen);" required>
+                <option value="campus">Campus Life</option>
+                <option value="classroom">Classroom & Pranks</option>
+                <option value="fests">Fests & Culturals</option>
+                <option value="hostel">Hostel Diaries</option>
+                <option value="messages">Warm Wishes</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label>Media Type</label>
+              <div style="display: flex; gap: 20px; padding: 0.5rem 0;">
+                <label style="font-size: 0.95rem; font-weight: normal; text-transform: none;"><input type="radio" name="media-type" value="video" checked style="width: auto; margin-right: 8px;"> Video Reel</label>
+                <label style="font-size: 0.95rem; font-weight: normal; text-transform: none;"><input type="radio" name="media-type" value="photo" style="width: auto; margin-right: 8px;"> Photo Snapshot</label>
+              </div>
+            </div>
+            <div class="form-group" id="duration-group">
+              <label for="media-duration">Duration (for Videos)</label>
+              <input type="text" id="media-duration" placeholder="e.g. 2:45" value="1:30">
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="media-desc">Description</label>
+            <textarea id="media-desc" rows="3" placeholder="Tell the story behind this memory..." required></textarea>
+          </div>
+
+          <div class="form-group">
+            <label for="media-file">Choose File</label>
+            <input type="file" id="media-file" accept="video/*,image/*" required style="border: 2px dashed var(--sepia-gold); background: var(--rose-burgundy-light); padding: 1.5rem; text-align: center;">
+          </div>
+
+          <div class="progress-bar-container" id="progress-container">
+            <div class="progress-bar-fill" id="progress-fill"></div>
+          </div>
+          <div class="status-text" id="upload-status">Ready to upload</div>
+
+          <button type="submit" class="submit-pin-btn" style="margin-top: 1rem;">Upload Memory</button>
+        </form>
+
+        <hr style="border: 0; border-top: 1px dashed var(--border-sepia); margin: 3rem 0 2rem 0;">
+        <h3 class="scribble" style="font-size: 1.8rem; color: var(--rose-burgundy); margin-bottom: 0.5rem; text-align: center;">Active Media Assets</h3>
+        <p style="font-size: 0.9rem; color: var(--text-muted); text-align: center; margin-bottom: 1rem;">View and delete currently active scrapbook photos and videos.</p>
+        <div style="text-align: center;">
+          <button type="button" id="refresh-media-btn" class="btn-refresh">Load/Refresh Media List</button>
+        </div>
+        <div class="admin-list-container">
+          <table class="admin-table">
+            <thead>
+              <tr>
+                <th>Preview</th>
+                <th>Title</th>
+                <th>Type</th>
+                <th>Category</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody id="admin-media-tbody">
+              <tr>
+                <td colspan="5" style="text-align: center; color: var(--text-muted); padding: 20px 10px;">Click "Load/Refresh" to view media items</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Invitee Management Card -->
+      <div class="scrapbook-page admin-form-card" style="margin-top: 4rem;">
+        <div class="tape-sticker sticker-top-left"></div>
+        <div class="tape-sticker sticker-top-right"></div>
+
+        <h2 class="admin-title">Invitee & RSVP Registry</h2>
+        <p class="step-instruction" style="text-align: center; margin-bottom: 2rem;">Import graduating seniors list and export real-time RSVP statuses.</p>
+
+        <!-- CSV Export section -->
+        <div class="form-group" style="border-bottom: 1px dashed var(--border-sepia); padding-bottom: 2.5rem; margin-bottom: 2.5rem; text-align: center;">
+          <h3 class="scribble" style="font-size: 1.8rem; color: var(--rose-burgundy); margin-bottom: 0.5rem;">Export Registry</h3>
+          <p style="font-size: 0.9rem; color: var(--text-muted); margin-bottom: 1.5rem;">Download a CSV spreadsheet showing RSVP choices, email addresses, and verification statuses of all invitees.</p>
+          <button id="admin-export-btn" class="submit-pin-btn" style="width: auto; padding: 0.8rem 2.5rem; display: inline-flex; align-items: center; justify-content: center; gap: 8px;">
+            Export & Download RSVP CSV
+          </button>
+        </div>
+
+        <!-- CSV Import section -->
+        <form id="admin-import-form" class="guestbook-form">
+          <h3 class="scribble" style="font-size: 1.8rem; color: var(--rose-burgundy); margin-bottom: 0.5rem; text-align: center;">Import Invitees</h3>
+          <p style="font-size: 0.9rem; color: var(--text-muted); text-align: center; margin-bottom: 1.5rem;">Upload a CSV file containing columns: <strong>Name, Email</strong> to batch import seniors into the database. Existing seniors won't be overwritten.</p>
+          
+          <div class="form-group">
+            <label for="csv-file">Choose CSV File</label>
+            <input type="file" id="csv-file" accept=".csv" required style="border: 2px dashed var(--sepia-gold); background: var(--rose-burgundy-light); padding: 1.5rem; text-align: center;">
+          </div>
+
+          <div class="status-text" id="import-status">Ready to import</div>
+          <button type="submit" class="submit-pin-btn" style="margin-top: 1rem;">Import Invitee List</button>
+        </form>
+
+        <hr style="border: 0; border-top: 1px dashed var(--border-sepia); margin: 3rem 0 2rem 0;">
+        <h3 class="scribble" style="font-size: 1.8rem; color: var(--rose-burgundy); margin-bottom: 0.5rem; text-align: center;">Current Invitee List</h3>
+        <p style="font-size: 0.9rem; color: var(--text-muted); text-align: center; margin-bottom: 1rem;">View and manage (delete) registered seniors.</p>
+        <div style="text-align: center;">
+          <button type="button" id="refresh-invitees-btn" class="btn-refresh">Load/Refresh Invitee List</button>
+        </div>
+        <div class="admin-list-container">
+          <table class="admin-table">
+            <thead>
+              <tr>
+                <th>Name</th>
+                <th>Email</th>
+                <th>RSVP</th>
+                <th>Food</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody id="admin-invitees-tbody">
+              <tr>
+                <td colspan="5" style="text-align: center; color: var(--text-muted); padding: 20px 10px;">Click "Load/Refresh" to view invitees</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <footer class="footer">
+    <p class="footer-text">Rukhsat © Class of 2026. Admin Panel.</p>
+  </footer>
+
+  <script>
+    function compressImage(file, maxWidth, maxHeight, quality) {
+      return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.readAsDataURL(file);
+        reader.onload = (event) => {
+          const img = new Image();
+          img.src = event.target.result;
+          img.onload = () => {
+            let width = img.width;
+            let height = img.height;
+
+            if (width > maxWidth || height > maxHeight) {
+              if (width > height) {
+                height = Math.round((height * maxWidth) / width);
+                width = maxWidth;
+              } else {
+                width = Math.round((width * maxHeight) / height);
+                height = maxHeight;
+              }
+            }
+
+            const canvas = document.createElement('canvas');
+            canvas.width = width;
+            canvas.height = height;
+
+            const ctx = canvas.getContext('2d');
+            ctx.drawImage(img, 0, 0, width, height);
+
+            canvas.toBlob(
+              (blob) => {
+                if (blob) {
+                  // Keep original file base name but output as optimized jpeg
+                  const cleanName = file.name.replace(/\.[^/.]+$/, "") + ".jpg";
+                  const compressedFile = new File([blob], cleanName, {
+                    type: 'image/jpeg',
+                    lastModified: Date.now()
+                  });
+                  resolve(compressedFile);
+                } else {
+                  reject(new Error('Canvas to Blob conversion failed'));
+                }
+              },
+              'image/jpeg',
+              quality
+            );
+          };
+          img.onerror = (err) => reject(err);
+        };
+        reader.onerror = (err) => reject(err);
+      });
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      const form = document.getElementById('admin-upload-form');
+      const fileInput = document.getElementById('media-file');
+      const durationGroup = document.getElementById('duration-group');
+      const progressContainer = document.getElementById('progress-container');
+      const progressFill = document.getElementById('progress-fill');
+      const statusText = document.getElementById('upload-status');
+      
+      const importForm = document.getElementById('admin-import-form');
+      const csvFileInput = document.getElementById('csv-file');
+      const importStatusText = document.getElementById('import-status');
+      const exportBtn = document.getElementById('admin-export-btn');
+
+      // Toggle duration input based on media type
+      document.querySelectorAll('input[name="media-type"]').forEach(radio => {
+        radio.addEventListener('change', (e) => {
+          if (e.target.value === 'photo') {
+            durationGroup.style.display = 'none';
+          } else {
+            durationGroup.style.display = 'flex';
+          }
+        });
+      });
+
+      // Handle CSV Export
+      exportBtn.addEventListener('click', () => {
+        const secret = document.getElementById('admin-secret').value;
+        if (!secret) {
+          alert('Please enter your Admin Secret Key in the upload form first.');
+          document.getElementById('admin-secret').focus();
+          return;
+        }
+        window.location.href = '/api/admin/invitees?secret=' + encodeURIComponent(secret);
+      });
+
+      // Handle CSV Import
+      importForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+        const secret = document.getElementById('admin-secret').value;
+        if (!secret) {
+          alert('Please enter your Admin Secret Key in the upload form first.');
+          document.getElementById('admin-secret').focus();
+          return;
+        }
+
+        const file = csvFileInput.files[0];
+        if (!file) return;
+
+        importStatusText.textContent = 'Importing invitee list...';
+        
+        const formData = new FormData();
+        formData.append('file', file);
+
+        fetch('/api/admin/invitees', {
+          method: 'POST',
+          headers: {
+            'X-Admin-Secret': secret
+          },
+          body: formData
+        })
+        .then(async res => {
+          const data = await res.json();
+          if (!res.ok) throw new Error(data.error || 'Failed to import CSV');
+          return data;
+        })
+        .then(data => {
+          importStatusText.textContent = `Import complete! Successfully imported ${data.imported} invitees.`;
+          alert(`Success! Successfully processed and imported ${data.imported} invitees.`);
+          importForm.reset();
+        })
+        .catch(err => {
+          importStatusText.textContent = 'Import Failed';
+          alert('Error importing invitees: ' + err.message);
+        });
+      });
+
+      // Handle Media Upload
+      form.addEventListener('submit', (e) => {
+        e.preventDefault();
+        
+        const secret = document.getElementById('admin-secret').value;
+        const title = document.getElementById('media-title').value;
+        const category = document.getElementById('media-category').value;
+        const type = document.querySelector('input[name="media-type"]:checked').value;
+        const duration = type === 'video' ? document.getElementById('media-duration').value : '';
+        const description = document.getElementById('media-desc').value;
+        const file = fileInput.files[0];
+
+        if (!file) return;
+
+        progressContainer.style.display = 'block';
+        progressFill.style.width = '0%';
+
+        if (type === 'photo') {
+          statusText.textContent = 'Optimizing image for fast loading...';
+          // Resize to max 1920x1920 and compress with 80% quality
+          compressImage(file, 1920, 1920, 0.8)
+            .then(optimizedFile => {
+              startUpload(optimizedFile);
+            })
+            .catch(err => {
+              console.warn('Image compression failed, using original:', err);
+              startUpload(file);
+            });
+        } else {
+          startUpload(file);
+        }
+
+        function startUpload(fileToUpload) {
+          statusText.textContent = 'Requesting upload authorization...';
+
+          fetch('/api/upload-url', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'X-Admin-Secret': secret
+            },
+            body: JSON.stringify({
+              filename: fileToUpload.name,
+              contentType: fileToUpload.type
+            })
+          })
+          .then(async res => {
+            const data = await res.json();
+            if (!res.ok) throw new Error(data.error || 'Failed to authorize upload');
+            return data;
+          })
+          .then(authData => {
+            statusText.textContent = 'Uploading file directly to storage...';
+            
+            const xhr = new XMLHttpRequest();
+            xhr.open('PUT', authData.uploadUrl, true);
+            xhr.setRequestHeader('Content-Type', fileToUpload.type);
+
+            xhr.upload.onprogress = (evt) => {
+              if (evt.lengthComputable) {
+                const percentComplete = Math.round((evt.loaded / evt.total) * 100);
+                progressFill.style.width = percentComplete + '%';
+                statusText.textContent = `Uploading: ${percentComplete}% (${Math.round(evt.loaded/1024/1024 * 10)/10}MB / ${Math.round(evt.total/1024/1024 * 10)/10}MB)`;
+              }
+            };
+
+            xhr.onload = () => {
+              if (xhr.status === 200) {
+                statusText.textContent = 'Saving file metadata to database...';
+                
+                fetch('/api/media', {
+                  method: 'POST',
+                  headers: {
+                    'Content-Type': 'application/json',
+                    'X-Admin-Secret': secret
+                  },
+                  body: JSON.stringify({
+                    url: authData.publicUrl,
+                    title: title,
+                    type: type,
+                    category: category,
+                    description: description,
+                    duration: duration
+                  })
+                })
+                .then(async res => {
+                  const data = await res.json();
+                  if (!res.ok) throw new Error(data.error || 'Failed to save metadata');
+                  return data;
+                })
+                .then(() => {
+                  statusText.textContent = 'Upload Complete! Memory is live.';
+                  progressFill.style.background = '#6b7a67';
+                  alert('Success! Memory is now live in the vault.');
+                  form.reset();
+                  durationGroup.style.display = 'flex';
+                  progressContainer.style.display = 'none';
+                })
+                .catch(err => {
+                  statusText.textContent = 'Metadata Save Failed';
+                  alert('Error saving metadata to database: ' + err.message);
+                });
+
+              } else {
+                statusText.textContent = 'Storage Upload Failed';
+                alert('Error uploading file to storage bucket. Status: ' + xhr.status);
+              }
+            };
+
+            xhr.onerror = () => {
+              statusText.textContent = 'Network Error during upload';
+              alert('A network error occurred while uploading to storage.');
+            };
+
+            xhr.send(fileToUpload);
+          })
+          .catch(err => {
+            progressContainer.style.display = 'none';
+            statusText.textContent = 'Authorization Failed';
+            alert('Upload authorization failed: ' + err.message);
+          });
+        }
+      });
+
+      // Invitee List & Media list refresh and delete logic
+      const refreshMediaBtn = document.getElementById('refresh-media-btn');
+      const mediaTbody = document.getElementById('admin-media-tbody');
+      const refreshInviteesBtn = document.getElementById('refresh-invitees-btn');
+      const inviteesTbody = document.getElementById('admin-invitees-tbody');
+
+      function loadMediaList() {
+        mediaTbody.innerHTML = `<tr><td colspan="5" style="text-align: center; color: var(--text-muted); padding: 20px 10px;">Loading media assets...</td></tr>`;
+        
+        fetch('/api/media')
+          .then(res => {
+            if (!res.ok) throw new Error('Failed to load media list');
+            return res.json();
+          })
+          .then(data => {
+            mediaTbody.innerHTML = '';
+            if (data.length === 0) {
+              mediaTbody.innerHTML = `<tr><td colspan="5" style="text-align: center; color: var(--text-muted); padding: 20px 10px;">No media assets found in database.</td></tr>`;
+              return;
+            }
+
+            data.forEach(item => {
+              const tr = document.createElement('tr');
+              
+              let previewHtml = '';
+              if (item.type === 'photo') {
+                previewHtml = `<img src="${item.url}" class="media-thumbnail-mini" alt="Preview">`;
+              } else {
+                previewHtml = `<div style="width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; background: var(--sage-green-light); border-radius: 4px; border: 1px solid var(--border-sepia); font-size: 1.2rem;">🎬</div>`;
+              }
+
+              tr.innerHTML = `
+                <td>${previewHtml}</td>
+                <td style="font-weight: 500;">${item.title}</td>
+                <td><span style="text-transform: capitalize;">${item.type}</span></td>
+                <td><span style="text-transform: capitalize;">${item.category}</span></td>
+                <td>
+                  <button class="btn-delete" data-id="${item.id}">Delete</button>
+                </td>
+              `;
+              
+              tr.querySelector('.btn-delete').addEventListener('click', (e) => {
+                const mediaId = e.target.getAttribute('data-id');
+                const secret = document.getElementById('admin-secret').value;
+                if (!secret) {
+                  alert('Please enter your Admin Secret Key in the upload form first.');
+                  document.getElementById('admin-secret').focus();
+                  return;
+                }
+
+                if (!confirm(`Are you sure you want to permanently delete the media asset "${item.title}" from the database and Backblaze B2 storage?`)) {
+                  return;
+                }
+
+                e.target.disabled = true;
+                e.target.textContent = 'Deleting...';
+
+                fetch(`/api/media?id=${mediaId}`, {
+                  method: 'DELETE',
+                  headers: {
+                    'X-Admin-Secret': secret
+                  }
+                })
+                .then(async res => {
+                  const result = await res.json();
+                  if (!res.ok) throw new Error(result.error || 'Failed to delete media asset');
+                  return result;
+                })
+                .then(() => {
+                  alert('Media asset deleted successfully!');
+                  loadMediaList();
+                })
+                .catch(err => {
+                  alert('Error deleting media: ' + err.message);
+                  e.target.disabled = false;
+                  e.target.textContent = 'Delete';
+                });
+              });
+
+              mediaTbody.appendChild(tr);
+            });
+          })
+          .catch(err => {
+            mediaTbody.innerHTML = `<tr><td colspan="5" style="text-align: center; color: #7c3d49; padding: 20px 10px; font-weight: bold;">Error: ${err.message}</td></tr>`;
+          });
+      }
+
+      function loadInviteesList() {
+        const secret = document.getElementById('admin-secret').value;
+        if (!secret) {
+          alert('Please enter your Admin Secret Key in the upload form first to authorize invitee queries.');
+          document.getElementById('admin-secret').focus();
+          return;
+        }
+
+        inviteesTbody.innerHTML = `<tr><td colspan="5" style="text-align: center; color: var(--text-muted); padding: 20px 10px;">Loading invitees...</td></tr>`;
+
+        fetch(`/api/admin/invitees?secret=${encodeURIComponent(secret)}`)
+          .then(res => {
+            if (!res.ok) throw new Error('Unauthorized or failed to load invitee list');
+            return res.json();
+          })
+          .then(data => {
+            inviteesTbody.innerHTML = '';
+            if (data.length === 0) {
+              inviteesTbody.innerHTML = `<tr><td colspan="5" style="text-align: center; color: var(--text-muted); padding: 20px 10px;">No invitees found in database.</td></tr>`;
+              return;
+            }
+
+            data.forEach(item => {
+              const tr = document.createElement('tr');
+              
+              let rsvpBadge = '';
+              if (item.rsvpStatus === 'confirmed') {
+                rsvpBadge = `<span style="background: #e1efe0; color: #388e3c; padding: 2px 6px; border-radius: 4px; font-weight: 500;">Yes</span>`;
+              } else if (item.rsvpStatus === 'declined') {
+                rsvpBadge = `<span style="background: #fbeedb; color: #e65100; padding: 2px 6px; border-radius: 4px; font-weight: 500;">No</span>`;
+              } else {
+                rsvpBadge = `<span style="background: #eaeaea; color: #666; padding: 2px 6px; border-radius: 4px; font-weight: 500;">Pending</span>`;
+              }
+
+              let foodPref = '-';
+              if (item.foodPreference) {
+                foodPref = item.foodPreference === 'veg' ? '🥦 Veg' : '🥩 Non-Veg';
+              }
+
+              tr.innerHTML = `
+                <td style="font-weight: 500;">${item.name}</td>
+                <td style="word-break: break-all;">${item.email}</td>
+                <td>${rsvpBadge}</td>
+                <td>${foodPref}</td>
+                <td>
+                  <button class="btn-delete" data-id="${item.id}">Delete</button>
+                </td>
+              `;
+              
+              tr.querySelector('.btn-delete').addEventListener('click', (e) => {
+                const studentId = e.target.getAttribute('data-id');
+                if (!confirm(`Are you sure you want to permanently delete the invitee "${item.name}"?`)) {
+                  return;
+                }
+
+                e.target.disabled = true;
+                e.target.textContent = 'Deleting...';
+
+                fetch(`/api/admin/invitees?id=${studentId}`, {
+                  method: 'DELETE',
+                  headers: {
+                    'X-Admin-Secret': secret
+                  }
+                })
+                .then(async res => {
+                  const result = await res.json();
+                  if (!res.ok) throw new Error(result.error || 'Failed to delete invitee');
+                  return result;
+                })
+                .then(() => {
+                  alert('Invitee deleted successfully!');
+                  loadInviteesList();
+                })
+                .catch(err => {
+                  alert('Error deleting invitee: ' + err.message);
+                  e.target.disabled = false;
+                  e.target.textContent = 'Delete';
+                });
+              });
+
+              inviteesTbody.appendChild(tr);
+            });
+          })
+          .catch(err => {
+            inviteesTbody.innerHTML = `<tr><td colspan="5" style="text-align: center; color: #7c3d49; padding: 20px 10px; font-weight: bold;">Error: ${err.message}</td></tr>`;
+          });
+      }
+
+      refreshMediaBtn.addEventListener('click', loadMediaList);
+      refreshInviteesBtn.addEventListener('click', loadInviteesList);
+    });
+  </script>
+</body>
+</html>
