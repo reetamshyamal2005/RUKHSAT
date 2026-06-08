@@ -11,7 +11,7 @@ import (
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 
-	"rukhsat/api/common"
+	"rukhsat/common"
 )
 
 type rsvpRequest struct {

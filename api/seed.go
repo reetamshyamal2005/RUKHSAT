@@ -9,7 +9,7 @@ import (
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 
-	"rukhsat/api/common"
+	"rukhsat/common"
 )
 
 // Handler is the entrypoint for Vercel Serverless Function /api/seed

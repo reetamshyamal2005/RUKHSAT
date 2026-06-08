@@ -13,7 +13,7 @@ import (
 	"github.com/skip2/go-qrcode"
 	"go.mongodb.org/mongo-driver/bson"
 
-	"rukhsat/api/common"
+	"rukhsat/common"
 )
 
 // readInvitationCard attempts to locate and read the invitation card file

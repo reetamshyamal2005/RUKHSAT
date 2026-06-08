@@ -15,7 +15,7 @@ import (
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 
-	"rukhsat/api/common"
+	"rukhsat/common"
 )
 
 // Handler handles GET, POST, and DELETE requests for /api/admin/invitees

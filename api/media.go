@@ -14,7 +14,7 @@ import (
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo/options"
 
-	"rukhsat/api/common"
+	"rukhsat/common"
 )
 
 // Handler handles GET, POST, and DELETE requests for /api/media

@@ -12,7 +12,7 @@ import (
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/service/s3"
 
-	"rukhsat/api/common"
+	"rukhsat/common"
 )
 
 type uploadRequest struct {
