@@ -12,8 +12,8 @@ import (
 	"rukhsat/common"
 )
 
-// Handler is the entrypoint for Vercel Serverless Function /api/seed
-func Handler(w http.ResponseWriter, r *http.Request) {
+// SeedHandler is the entrypoint for Vercel Serverless Function /api/seed
+func SeedHandler(w http.ResponseWriter, r *http.Request) {
 	// Enable CORS
 	w.Header().Set("Access-Control-Allow-Origin", "*")
 	w.Header().Set("Access-Control-Allow-Headers", "Content-Type")

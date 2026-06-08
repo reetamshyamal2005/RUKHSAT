@@ -39,8 +39,8 @@ func readInvitationCard() ([]byte, string, error) {
 	return nil, "", fmt.Errorf("could not locate invitation_card or farewell'26.png in common paths")
 }
 
-// Handler handles GET /api/verify?token=...
-func Handler(w http.ResponseWriter, r *http.Request) {
+// VerifyHandler handles GET /api/verify?token=...
+func VerifyHandler(w http.ResponseWriter, r *http.Request) {
 	// Enable CORS
 	w.Header().Set("Access-Control-Allow-Origin", "*")
 	w.Header().Set("Access-Control-Allow-Headers", "Content-Type")

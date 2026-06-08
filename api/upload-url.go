@@ -27,8 +27,8 @@ func sanitizeFilename(filename string) string {
 	return reg.ReplaceAllString(clean, "")
 }
 
-// Handler handles POST /api/upload-url
-func Handler(w http.ResponseWriter, r *http.Request) {
+// UploadUrlHandler handles POST /api/upload-url
+func UploadUrlHandler(w http.ResponseWriter, r *http.Request) {
 	// Enable CORS
 	w.Header().Set("Access-Control-Allow-Origin", "*")
 	w.Header().Set("Access-Control-Allow-Headers", "Content-Type, X-Admin-Secret")

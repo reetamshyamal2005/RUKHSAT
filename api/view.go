@@ -11,8 +11,8 @@ import (
 	"rukhsat/common"
 )
 
-// Handler handles GET /api/view?key=...
-func Handler(w http.ResponseWriter, r *http.Request) {
+// ViewHandler handles GET /api/view?key=...
+func ViewHandler(w http.ResponseWriter, r *http.Request) {
 	// Enable CORS
 	w.Header().Set("Access-Control-Allow-Origin", "*")
 	w.Header().Set("Access-Control-Allow-Headers", "Content-Type")

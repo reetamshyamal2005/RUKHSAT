@@ -30,8 +30,8 @@ func generateSecureToken() string {
 	return fmt.Sprintf("%x", b)
 }
 
-// Handler handles POST /api/rsvp
-func Handler(w http.ResponseWriter, r *http.Request) {
+// RsvpHandler handles POST /api/rsvp
+func RsvpHandler(w http.ResponseWriter, r *http.Request) {
 	// Enable CORS
 	w.Header().Set("Access-Control-Allow-Origin", "*")
 	w.Header().Set("Access-Control-Allow-Headers", "Content-Type")

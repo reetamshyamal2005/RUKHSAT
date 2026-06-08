@@ -13,8 +13,8 @@ import (
 	"rukhsat/common"
 )
 
-// Handler handles GET /api/students?query=...
-func Handler(w http.ResponseWriter, r *http.Request) {
+// StudentsHandler handles GET /api/students?query=...
+func StudentsHandler(w http.ResponseWriter, r *http.Request) {
 	// Enable CORS
 	w.Header().Set("Access-Control-Allow-Origin", "*")
 	w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
