@@ -154,6 +154,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 				json.NewEncoder(w).Encode(map[string]string{"error": "Failed to write database records: " + err.Error()})
 				return
 			}
+			common.InvalidateStudentsCache()
 		}
 
 		w.Header().Set("Content-Type", "application/json")
@@ -236,6 +237,8 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 			json.NewEncoder(w).Encode(map[string]string{"error": "Failed to delete student: " + err.Error()})
 			return
 		}
+
+		common.InvalidateStudentsCache()
 
 		w.Header().Set("Content-Type", "application/json")
 		json.NewEncoder(w).Encode(map[string]string{"status": "success", "message": "Invitee deleted successfully"})

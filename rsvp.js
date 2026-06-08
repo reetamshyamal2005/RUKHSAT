@@ -56,10 +56,35 @@ document.addEventListener('DOMContentLoaded', () => {
       }
 
       debounceTimeout = setTimeout(() => {
-        fetch(`/api/students?query=${encodeURIComponent(query)}`)
+        fetch('/api/graphql', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            query: `
+              query SearchStudents($query: String!) {
+                searchStudents(query: $query) {
+                  id
+                  name
+                  email
+                  rsvpStatus
+                  verified
+                  foodPreference
+                }
+              }
+            `,
+            variables: { query }
+          })
+        })
           .then(res => res.json())
-          .then(data => {
-            renderSuggestions(data);
+          .then(result => {
+            if (result.errors) {
+              console.error(result.errors);
+              renderSuggestions([]);
+            } else {
+              renderSuggestions(result.data.searchStudents);
+            }
           })
           .catch(err => {
             console.error('Failed to fetch students:', err);
@@ -80,7 +105,7 @@ document.addEventListener('DOMContentLoaded', () => {
     dropdown.innerHTML = '';
 
     if (!students || students.length === 0) {
-      dropdown.innerHTML = '<div class="autocomplete-item scribble" style="text-align: center; color: var(--rose-burgundy);">"No seniors match your query..."</div>';
+      dropdown.innerHTML = '<div class="autocomplete-item scribble" style="text-align: center; color: var(--rose-burgundy);">"No names match your query..."</div>';
       showDropdown();
       return;
     }
@@ -88,7 +113,13 @@ document.addEventListener('DOMContentLoaded', () => {
     students.forEach(student => {
       const item = document.createElement('div');
       item.className = 'autocomplete-item';
-      item.textContent = student.name;
+      if (student.verified) {
+        item.textContent = `${student.name} (RSVP Done)`;
+        item.style.color = 'var(--sage-green)';
+        item.style.fontWeight = '600';
+      } else {
+        item.textContent = student.name;
+      }
       item.addEventListener('click', () => selectStudent(student));
       dropdown.appendChild(item);
     });
@@ -112,14 +143,62 @@ document.addEventListener('DOMContentLoaded', () => {
     if (searchInput) searchInput.value = '';
     if (searchInput) searchInput.classList.add('hidden');
 
-    if (pillNameSpan) pillNameSpan.textContent = `Selected: ${student.name}`;
-    selectedPill?.classList.remove('hidden');
+    if (student.verified) {
+      if (pillNameSpan) pillNameSpan.textContent = `Selected: ${student.name} (RSVP Completed)`;
+      selectedPill?.classList.remove('hidden');
 
-    // Display masked email in Step 3
-    if (emailMasked) emailMasked.textContent = maskEmail(student.email);
+      if (emailMasked) emailMasked.textContent = maskEmail(student.email);
 
-    // Unlock Step 2
-    stepDetails?.classList.remove('locked');
+      // Select and Lock step details
+      attendanceCards.forEach(c => {
+        c.classList.remove('active');
+        if (c.getAttribute('data-val') === student.rsvpStatus) {
+          c.classList.add('active');
+        }
+      });
+      state.attendance = student.rsvpStatus;
+
+      // Select food pref if confirmed
+      if (student.rsvpStatus === 'confirmed') {
+        foodPreferenceSection?.classList.remove('hidden');
+        foodCards.forEach(c => {
+          c.classList.remove('active');
+          if (c.getAttribute('data-val') === student.foodPreference) {
+            c.classList.add('active');
+          }
+        });
+        state.foodPreference = student.foodPreference;
+      } else {
+        foodPreferenceSection?.classList.add('hidden');
+      }
+
+      stepDetails?.classList.remove('locked');
+      stepVerify?.classList.remove('locked');
+
+      const verificationText = document.getElementById('verification-text');
+      if (verificationText) verificationText.textContent = "You have already completed and verified your RSVP on our list! Thank you.";
+
+      if (submitBtn) {
+        submitBtn.textContent = "RSVP Already Confirmed";
+        submitBtn.disabled = true;
+      }
+    } else {
+      if (pillNameSpan) pillNameSpan.textContent = `Selected: ${student.name}`;
+      selectedPill?.classList.remove('hidden');
+
+      if (emailMasked) emailMasked.textContent = maskEmail(student.email);
+
+      // Unlock Step 2
+      stepDetails?.classList.remove('locked');
+
+      const verificationText = document.getElementById('verification-text');
+      if (verificationText) verificationText.textContent = "We will send a one-click magic link to your registered email address.";
+
+      if (submitBtn) {
+        submitBtn.textContent = "Send Magic Verification Link";
+        submitBtn.disabled = true;
+      }
+    }
   }
 
   // Clear selected student
@@ -141,10 +220,17 @@ document.addEventListener('DOMContentLoaded', () => {
         searchInput.focus();
       }
 
+      // Reset step instruction texts & button
+      const verificationText = document.getElementById('verification-text');
+      if (verificationText) verificationText.textContent = "We will send a one-click magic link to your registered email address.";
+      if (submitBtn) {
+        submitBtn.textContent = "Send Magic Verification Link";
+        submitBtn.disabled = true;
+      }
+
       // Lock subsequent steps
       stepDetails?.classList.add('locked');
       stepVerify?.classList.add('locked');
-      if (submitBtn) submitBtn.disabled = true;
     });
   }
 
@@ -152,6 +238,7 @@ document.addEventListener('DOMContentLoaded', () => {
   attendanceCards.forEach(card => {
     card.addEventListener('click', () => {
       if (stepDetails?.classList.contains('locked')) return;
+      if (state.selectedStudent && state.selectedStudent.verified) return;
 
       attendanceCards.forEach(c => c.classList.remove('active'));
       card.classList.add('active');
@@ -175,6 +262,7 @@ document.addEventListener('DOMContentLoaded', () => {
   foodCards.forEach(card => {
     card.addEventListener('click', () => {
       if (foodPreferenceSection?.classList.contains('hidden')) return;
+      if (state.selectedStudent && state.selectedStudent.verified) return;
 
       foodCards.forEach(c => c.classList.remove('active'));
       card.classList.add('active');
@@ -199,19 +287,33 @@ document.addEventListener('DOMContentLoaded', () => {
         foodPreference: state.attendance === 'confirmed' ? state.foodPreference : ''
       };
 
-      fetch('/api/rsvp', {
+      fetch('/api/graphql', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
         },
-        body: JSON.stringify(payload)
+        body: JSON.stringify({
+          query: `
+            mutation SubmitRSVP($studentId: ID!, $rsvpStatus: String!, $foodPreference: String) {
+              submitRSVP(studentId: $studentId, rsvpStatus: $rsvpStatus, foodPreference: $foodPreference) {
+                id
+                rsvpStatus
+              }
+            }
+          `,
+          variables: {
+            studentId: state.selectedStudent.id,
+            rsvpStatus: state.attendance,
+            foodPreference: state.attendance === 'confirmed' ? state.foodPreference : ''
+          }
+        })
       })
       .then(async res => {
-        const data = await res.json();
-        if (!res.ok) {
-          throw new Error(data.error || 'Server returned an error');
+        const result = await res.json();
+        if (result.errors) {
+          throw new Error(result.errors[0].message || 'Server returned an error');
         }
-        return data;
+        return result.data.submitRSVP;
       })
       .then(data => {
         // Show success overlay

@@ -114,6 +114,26 @@
       border-radius: 4px;
       border: 1px solid var(--border-sepia);
     }
+    @media (max-width: 768px) {
+      .admin-container {
+        margin: 2rem auto;
+        padding: 0 10px;
+      }
+      .admin-form-card {
+        padding: 1.5rem 1.2rem;
+      }
+      .admin-title {
+        font-size: 1.8rem;
+        margin-bottom: 1.5rem;
+      }
+      .admin-list-container {
+        margin-top: 1.5rem;
+      }
+      .admin-table th, .admin-table td {
+        padding: 6px;
+        font-size: 0.75rem;
+      }
+    }
   </style>
   <script src="security.js"></script>
 </head>
@@ -128,7 +148,28 @@
       <a href="photo-vault.html">Photo Vault</a>
       <a href="video-vault.html">Video Vault</a>
     </nav>
+    <div class="header-actions">
+      <button class="hamburger-btn" id="menu-toggle" aria-label="Toggle Menu">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+    </div>
   </header>
+
+  <!-- Mobile Drawer Overlay -->
+  <div class="nav-drawer" id="nav-drawer">
+    <div class="drawer-header">
+      <div class="logo">IT Farewell'26</div>
+      <button class="drawer-close-btn" id="menu-close" aria-label="Close Menu">&times;</button>
+    </div>
+    <nav class="drawer-links">
+      <a href="index.html">Home</a>
+      <a href="photo-vault.html">Photo Vault</a>
+      <a href="video-vault.html">Video Vault</a>
+      <a href="rsvp.html">RSVP Desk</a>
+    </nav>
+  </div>
 
   <section class="admin-section" style="padding-top: 130px; min-height: 85vh;">
     <div class="admin-container">
@@ -447,21 +488,31 @@
         function startUpload(fileToUpload) {
           statusText.textContent = 'Requesting upload authorization...';
 
-          fetch('/api/upload-url', {
+          fetch('/api/graphql', {
             method: 'POST',
             headers: {
-              'Content-Type': 'application/json',
-              'X-Admin-Secret': secret
+              'Content-Type': 'application/json'
             },
             body: JSON.stringify({
-              filename: fileToUpload.name,
-              contentType: fileToUpload.type
+              query: `
+                mutation GenerateUploadURL($secret: String!, $filename: String!) {
+                  generateUploadURL(secret: $secret, filename: $filename) {
+                    uploadUrl
+                    publicUrl
+                    key
+                  }
+                }
+              `,
+              variables: {
+                secret: secret,
+                filename: fileToUpload.name
+              }
             })
           })
           .then(async res => {
-            const data = await res.json();
-            if (!res.ok) throw new Error(data.error || 'Failed to authorize upload');
-            return data;
+            const result = await res.json();
+            if (result.errors) throw new Error(result.errors[0].message || 'Failed to authorize upload');
+            return result.data.generateUploadURL;
           })
           .then(authData => {
             statusText.textContent = 'Uploading file directly to storage...';
@@ -482,25 +533,34 @@
               if (xhr.status === 200) {
                 statusText.textContent = 'Saving file metadata to database...';
                 
-                fetch('/api/media', {
+                fetch('/api/graphql', {
                   method: 'POST',
                   headers: {
-                    'Content-Type': 'application/json',
-                    'X-Admin-Secret': secret
+                    'Content-Type': 'application/json'
                   },
                   body: JSON.stringify({
-                    url: authData.publicUrl,
-                    title: title,
-                    type: type,
-                    category: category,
-                    description: description,
-                    duration: duration
+                    query: `
+                      mutation SaveMediaMetadata($secret: String!, $url: String!, $title: String!, $type: String!, $category: String!, $description: String!, $duration: String) {
+                        saveMediaMetadata(secret: $secret, url: $url, title: $title, type: $type, category: $category, description: $description, duration: $duration) {
+                          id
+                        }
+                      }
+                    `,
+                    variables: {
+                      secret: secret,
+                      url: authData.publicUrl,
+                      title: title,
+                      type: type,
+                      category: category,
+                      description: description,
+                      duration: duration
+                    }
                   })
                 })
                 .then(async res => {
-                  const data = await res.json();
-                  if (!res.ok) throw new Error(data.error || 'Failed to save metadata');
-                  return data;
+                  const result = await res.json();
+                  if (result.errors) throw new Error(result.errors[0].message || 'Failed to save metadata');
+                  return result.data.saveMediaMetadata;
                 })
                 .then(() => {
                   statusText.textContent = 'Upload Complete! Memory is live.';
@@ -545,12 +605,32 @@
       function loadMediaList() {
         mediaTbody.innerHTML = `<tr><td colspan="5" style="text-align: center; color: var(--text-muted); padding: 20px 10px;">Loading media assets...</td></tr>`;
         
-        fetch('/api/media')
+        fetch('/api/graphql', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            query: `
+              query ListMedia {
+                listMedia {
+                  id
+                  url
+                  title
+                  type
+                  category
+                }
+              }
+            `
+          })
+        })
           .then(res => {
             if (!res.ok) throw new Error('Failed to load media list');
             return res.json();
           })
-          .then(data => {
+          .then(result => {
+            if (result.errors) throw new Error(result.errors[0].message);
+            const data = result.data.listMedia;
             mediaTbody.innerHTML = '';
             if (data.length === 0) {
               mediaTbody.innerHTML = `<tr><td colspan="5" style="text-align: center; color: var(--text-muted); padding: 20px 10px;">No media assets found in database.</td></tr>`;
@@ -593,16 +673,27 @@
                 e.target.disabled = true;
                 e.target.textContent = 'Deleting...';
 
-                fetch(`/api/media?id=${mediaId}`, {
-                  method: 'DELETE',
+                fetch('/api/graphql', {
+                  method: 'POST',
                   headers: {
-                    'X-Admin-Secret': secret
-                  }
+                    'Content-Type': 'application/json'
+                  },
+                  body: JSON.stringify({
+                    query: `
+                      mutation DeleteMedia($secret: String!, $id: ID!) {
+                        deleteMedia(secret: $secret, id: $id)
+                      }
+                    `,
+                    variables: {
+                      secret: secret,
+                      id: mediaId
+                    }
+                  })
                 })
                 .then(async res => {
                   const result = await res.json();
-                  if (!res.ok) throw new Error(result.error || 'Failed to delete media asset');
-                  return result;
+                  if (result.errors) throw new Error(result.errors[0].message || 'Failed to delete media asset');
+                  return result.data;
                 })
                 .then(() => {
                   alert('Media asset deleted successfully!');
@@ -633,12 +724,34 @@
 
         inviteesTbody.innerHTML = `<tr><td colspan="5" style="text-align: center; color: var(--text-muted); padding: 20px 10px;">Loading invitees...</td></tr>`;
 
-        fetch(`/api/admin/invitees?secret=${encodeURIComponent(secret)}`)
+        fetch('/api/graphql', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            query: `
+              query ListInvitees($secret: String!) {
+                listInvitees(secret: $secret) {
+                  id
+                  name
+                  email
+                  rsvpStatus
+                  foodPreference
+                  verified
+                }
+              }
+            `,
+            variables: { secret }
+          })
+        })
           .then(res => {
             if (!res.ok) throw new Error('Unauthorized or failed to load invitee list');
             return res.json();
           })
-          .then(data => {
+          .then(result => {
+            if (result.errors) throw new Error(result.errors[0].message);
+            const data = result.data.listInvitees;
             inviteesTbody.innerHTML = '';
             if (data.length === 0) {
               inviteesTbody.innerHTML = `<tr><td colspan="5" style="text-align: center; color: var(--text-muted); padding: 20px 10px;">No invitees found in database.</td></tr>`;
@@ -681,16 +794,27 @@
                 e.target.disabled = true;
                 e.target.textContent = 'Deleting...';
 
-                fetch(`/api/admin/invitees?id=${studentId}`, {
-                  method: 'DELETE',
+                fetch('/api/graphql', {
+                  method: 'POST',
                   headers: {
-                    'X-Admin-Secret': secret
-                  }
+                    'Content-Type': 'application/json'
+                  },
+                  body: JSON.stringify({
+                    query: `
+                      mutation DeleteInvitee($secret: String!, $id: ID!) {
+                        deleteInvitee(secret: $secret, id: $id)
+                      }
+                    `,
+                    variables: {
+                      secret: secret,
+                      id: studentId
+                    }
+                  })
                 })
                 .then(async res => {
                   const result = await res.json();
-                  if (!res.ok) throw new Error(result.error || 'Failed to delete invitee');
-                  return result;
+                  if (result.errors) throw new Error(result.errors[0].message || 'Failed to delete invitee');
+                  return result.data;
                 })
                 .then(() => {
                   alert('Invitee deleted successfully!');
@@ -713,6 +837,35 @@
 
       refreshMediaBtn.addEventListener('click', loadMediaList);
       refreshInviteesBtn.addEventListener('click', loadInviteesList);
+
+      // Mobile Navigation Drawer Toggle
+      const menuToggle = document.getElementById('menu-toggle');
+      const menuClose = document.getElementById('menu-close');
+      const navDrawer = document.getElementById('nav-drawer');
+
+      function openDrawer() {
+        if (navDrawer) {
+          navDrawer.classList.add('open');
+          document.body.style.overflow = 'hidden';
+        }
+      }
+
+      function closeDrawer() {
+        if (navDrawer) {
+          navDrawer.classList.remove('open');
+          document.body.style.overflow = 'auto';
+        }
+      }
+
+      if (menuToggle) menuToggle.addEventListener('click', openDrawer);
+      if (menuClose) menuClose.addEventListener('click', closeDrawer);
+
+      const drawerLinks = navDrawer?.querySelectorAll('a');
+      if (drawerLinks) {
+        drawerLinks.forEach(link => {
+          link.addEventListener('click', closeDrawer);
+        });
+      }
     });
   </script>
 </body>

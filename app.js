@@ -187,12 +187,37 @@ document.addEventListener('DOMContentLoaded', () => {
   function loadMedia() {
     if (!gridContainer && !photoGridContainer) return;
 
-    fetch('/api/media')
+    fetch('/api/graphql', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        query: `
+          query ListMedia {
+            listMedia {
+              id
+              url
+              title
+              type
+              category
+              description
+              duration
+              createdAt
+            }
+          }
+        `
+      })
+    })
       .then(res => {
         if (!res.ok) throw new Error('API failed');
         return res.json();
       })
-      .then(data => {
+      .then(result => {
+        if (result.errors) {
+          throw new Error(result.errors[0].message);
+        }
+        const data = result.data.listMedia;
         if (gridContainer) {
           const videosOnly = data.filter(item => item.type === 'video');
           if (videosOnly.length > 0) {
@@ -349,4 +374,35 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     }
   });
+
+  // ==========================================
+  // 5. MOBILE NAVIGATION DRAWER
+  // ==========================================
+  const menuToggle = document.getElementById('menu-toggle');
+  const menuClose = document.getElementById('menu-close');
+  const navDrawer = document.getElementById('nav-drawer');
+
+  function openDrawer() {
+    if (navDrawer) {
+      navDrawer.classList.add('open');
+      document.body.style.overflow = 'hidden'; 
+    }
+  }
+
+  function closeDrawer() {
+    if (navDrawer) {
+      navDrawer.classList.remove('open');
+      document.body.style.overflow = 'auto'; 
+    }
+  }
+
+  if (menuToggle) menuToggle.addEventListener('click', openDrawer);
+  if (menuClose) menuClose.addEventListener('click', closeDrawer);
+
+  const drawerLinks = navDrawer?.querySelectorAll('a');
+  if (drawerLinks) {
+    drawerLinks.forEach(link => {
+      link.addEventListener('click', closeDrawer);
+    });
+  }
 });

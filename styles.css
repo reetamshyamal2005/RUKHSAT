@@ -223,6 +223,12 @@ body {
   width: 100%;
 }
 
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
 /* Minimalist Music Toggle button in Navbar */
 .music-toggle-btn {
   background: var(--rose-burgundy-light);
@@ -638,7 +644,8 @@ body {
 .polaroid-img-placeholder img {
   width: 100%;
   height: 100%;
-  object-fit: contain;
+  object-fit: cover;
+  object-position: center;
   border-radius: 2px;
 }
 
@@ -788,7 +795,8 @@ section {
   max-width: 600px;
 }
 
-#video-search {
+#video-search,
+#student-search-input {
   width: 100%;
   padding: 1rem 1.5rem 1rem 3rem;
   border: 2px solid var(--text-charcoal);
@@ -801,7 +809,8 @@ section {
   transition: all var(--transition-speed) ease;
 }
 
-#video-search:focus {
+#video-search:focus,
+#student-search-input:focus {
   box-shadow: 5px 5px 0 var(--sepia-gold);
   transform: translate(-2px, -2px);
 }
@@ -1625,32 +1634,172 @@ section {
   }
 }
 
+/* Mobile Navigation Hamburger & Drawer Styles */
+.hamburger-btn {
+  display: none;
+  flex-direction: column;
+  justify-content: space-between;
+  width: 24px;
+  height: 18px;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  z-index: 1010;
+  margin-left: 1rem;
+}
+
+.hamburger-btn span {
+  width: 100%;
+  height: 2px;
+  background-color: var(--text-charcoal);
+  border-radius: 2px;
+  transition: all 0.3s ease;
+}
+
+.nav-drawer {
+  position: fixed;
+  top: 0;
+  right: -100%;
+  width: 75%;
+  max-width: 320px;
+  height: 100vh;
+  background-color: rgba(253, 251, 247, 0.98);
+  backdrop-filter: blur(20px);
+  box-shadow: -10px 0 30px rgba(45, 41, 38, 0.15);
+  z-index: 2000;
+  padding: 2rem 1.5rem;
+  display: flex;
+  flex-direction: column;
+  transition: right 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  border-left: 1.5px solid var(--border-sepia);
+}
+
+.nav-drawer.open {
+  right: 0;
+}
+
+.drawer-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 3rem;
+  border-bottom: 1.5px dashed var(--border-sepia);
+  padding-bottom: 1rem;
+}
+
+.drawer-close-btn {
+  font-size: 2.2rem;
+  background: transparent;
+  border: none;
+  color: var(--text-charcoal);
+  cursor: pointer;
+  line-height: 1;
+}
+
+.drawer-links {
+  display: flex;
+  flex-direction: column;
+  gap: 1.8rem;
+}
+
+.drawer-links a {
+  font-family: var(--font-title);
+  font-size: 1.6rem;
+  color: var(--text-charcoal);
+  text-decoration: none;
+  font-weight: 600;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+}
+
+.drawer-links a:hover,
+.drawer-links a.active {
+  color: var(--rose-burgundy);
+  transform: translateX(5px);
+}
+
+.drawer-links a.active::after {
+  content: '';
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  background-color: var(--sepia-gold);
+  border-radius: 50%;
+  margin-left: 10px;
+  border: 1px solid var(--text-charcoal);
+}
+
+
 @media (max-width: 768px) {
   section {
-    padding: 4rem 1.5rem;
+    padding: 3rem 1rem;
   }
   .navbar {
-    height: 70px;
-    padding: 0 1.5rem;
+    height: 60px;
+    padding: 0 1rem;
+  }
+  .navbar.scrolled {
+    height: 60px;
   }
   .logo {
-    font-size: 1.8rem;
+    font-size: 1.3rem;
+  }
+  .logo::after {
+    bottom: 2px;
+    right: -6px;
+    width: 4px;
+    height: 4px;
   }
   .nav-links {
-    display: none; /* In a production scale project you'd make a burger, but we are designing clean simple navigation */
+    display: none !important;
+  }
+  .hamburger-btn {
+    display: flex !important;
   }
   .music-status-text {
     display: none;
   }
+  .music-toggle-btn {
+    padding: 0.35rem 0.75rem;
+    font-size: 0.72rem;
+    gap: 4px;
+  }
+  .music-icon {
+    width: 13px;
+    height: 13px;
+  }
+  .hero-section {
+    padding: calc(60px + 1.5rem) 1rem 2rem 1rem;
+    min-height: 80vh;
+  }
+  .scrapbook-page {
+    padding: 1.5rem;
+  }
   .hero-title {
-    font-size: 3.8rem;
+    font-size: 2.8rem;
   }
   .hero-subtitle {
-    font-size: 1.35rem;
+    font-size: 1.1rem;
+    margin-bottom: 2rem;
+    min-height: 80px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    word-break: keep-all;
+  }
+  .polaroid-stack-container {
+    gap: 1.5rem;
+  }
+  .showcase-polaroid {
+    width: 220px;
   }
   .stats-row {
     flex-wrap: wrap;
     gap: 1.5rem 0.5rem;
+    padding: 1.2rem 0;
   }
   .stat-item {
     flex: 0 0 45%;
@@ -1660,17 +1809,68 @@ section {
   }
   .video-grid {
     grid-template-columns: 1fr;
-    gap: 2.5rem;
+    gap: 2rem;
   }
   .cassette-widget {
     left: 50%;
     transform: translateX(-50%) translateY(0);
-    bottom: 15px;
-    width: 90%;
+    bottom: 10px;
+    width: 92%;
     max-width: 320px;
   }
   .cassette-widget.collapsed {
     transform: translateX(-50%) translateY(calc(100% - 40px));
+  }
+  .rsvp-card {
+    padding: 1.5rem 1rem;
+  }
+  .rsvp-choices-grid, .small-choices {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+  .choice-card {
+    padding: 1.1rem;
+  }
+  .verify-email-display {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+    padding: 1rem;
+  }
+  .email-value {
+    font-size: 0.95rem;
+  }
+  .rsvp-submit-btn {
+    padding: 1rem;
+    font-size: 0.95rem;
+  }
+  .rsvp-overlay {
+    padding: 1.5rem;
+  }
+  .guestbook-layout {
+    flex-direction: column;
+    gap: 2rem;
+  }
+  .writing-desk {
+    flex: none;
+    width: 100%;
+  }
+  .timeline-line {
+    left: 20px;
+  }
+  .timeline-item {
+    padding-left: 45px;
+    padding-right: 0;
+  }
+  .timeline-item.left .timeline-badge,
+  .timeline-item.right .timeline-badge {
+    left: 0px;
+    width: 40px;
+    height: 40px;
+    font-size: 0.75rem;
+  }
+  .showcase-polaroid, .polaroid-card, .polaroid-1, .polaroid-2, .polaroid-3 {
+    transform: none !important;
   }
 }
 
@@ -1691,7 +1891,7 @@ section {
   gap: 15px;
   box-shadow: 0 10px 25px rgba(124, 61, 73, 0.3), 4px 4px 0 var(--sepia-gold);
   z-index: 1001;
-  transition: all var(--transition-speed) ease;
+  transition: background var(--transition-speed) ease, color var(--transition-speed) ease, transform var(--transition-speed) ease, box-shadow var(--transition-speed) ease;
   border: 2px solid var(--text-charcoal);
 }
 
@@ -1722,9 +1922,12 @@ section {
 
 @media (max-width: 768px) {
   .floating-rsvp-btn {
-    top: 85px;
-    bottom: auto;
-    right: 15px;
+    position: fixed !important;
+    top: auto !important;
+    bottom: 20px !important;
+    right: 20px !important;
+    z-index: 10005 !important;
+    display: flex !important;
     padding: 8px 16px;
     border-radius: 30px;
     gap: 0;
@@ -2100,16 +2303,44 @@ section {
 }
 
 @media (max-width: 768px) {
+  #video-search,
+  #student-search-input {
+    padding: 0.8rem 1.2rem 0.8rem 2.6rem !important;
+    font-size: 0.95rem !important;
+  }
+  .search-icon {
+    left: 0.8rem !important;
+    width: 16px !important;
+    height: 16px !important;
+  }
   .rsvp-choices-grid {
-    grid-template-columns: 1fr;
-    gap: 12px;
+    grid-template-columns: 1fr !important;
+    gap: 12px !important;
   }
   .small-choices {
-    grid-template-columns: 1fr;
+    grid-template-columns: 1fr !important;
+    max-width: 100% !important;
   }
-  .rsvp-card {
-    padding: 2.2rem 1.5rem;
+  .choice-card {
+    padding: 1.1rem !important;
+  }
+  .verify-email-display {
+    flex-direction: column !important;
+    align-items: flex-start !important;
+    gap: 8px !important;
+    padding: 1rem !important;
+  }
+  .email-value {
+    font-size: 0.95rem !important;
+  }
+  .rsvp-submit-btn {
+    padding: 1rem !important;
+    font-size: 0.95rem !important;
+  }
+  .rsvp-overlay {
+    padding: 1.5rem !important;
   }
 }
+
 
 

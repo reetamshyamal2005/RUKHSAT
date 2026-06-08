@@ -2,42 +2,15 @@ package handler
 
 import (
 	"context"
-	"encoding/base64"
 	"encoding/json"
 	"fmt"
 	"net/http"
-	"os"
-	"path/filepath"
 	"time"
 
-	"github.com/skip2/go-qrcode"
 	"go.mongodb.org/mongo-driver/bson"
 
 	"rukhsat/common"
 )
-
-// readInvitationCard attempts to locate and read the invitation card file
-func readInvitationCard() ([]byte, string, error) {
-	paths := []string{
-		"images/invitation_card.png",
-		"../images/invitation_card.png",
-		"../../images/invitation_card.png",
-		"images/invitation_card.pdf",
-		"../images/invitation_card.pdf",
-		"../../images/invitation_card.pdf",
-		"images/farewell'26.png",
-		"../images/farewell'26.png",
-		"../../images/farewell'26.png",
-	}
-
-	for _, p := range paths {
-		b, err := os.ReadFile(p)
-		if err == nil {
-			return b, filepath.Base(p), nil
-		}
-	}
-	return nil, "", fmt.Errorf("could not locate invitation_card or farewell'26.png in common paths")
-}
 
 // VerifyHandler handles GET /api/verify?token=...
 func VerifyHandler(w http.ResponseWriter, r *http.Request) {
@@ -119,112 +92,66 @@ func VerifyHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// If the user declined, send a simple email confirmation and redirect
+	// Invalidate the cache since database state changed
+	common.InvalidateStudentsCache()
+
+	// Compose elegant HTML email body
+	rsvpText := "Yes, Count Me In! (Attending)"
+	foodText := "Vegetarian"
+	if finalFoodPreference == "non-veg" {
+		foodText = "Non-Vegetarian"
+	}
 	if finalRSVPStatus == "declined" {
-		declineEmailBody := fmt.Sprintf(`
-		<!DOCTYPE html>
-		<html>
-		<head><style>body{background-color:#fdfbf7;color:#2d2926;font-family:sans-serif;padding:20px;}.card{max-width:500px;margin:40px auto;background:#fff;border:1px solid #c2945d;padding:30px;text-align:center;}</style></head>
-		<body>
-			<div class="card">
-				<h2 style="color:#7c3d49;">RSVP Confirmation</h2>
-				<p>Hello <strong>%s</strong>,</p>
-				<p>We have registered your RSVP response: <strong>Declined</strong>.</p>
-				<p>We're sorry you won't be able to make it, but we wish you all the best and hope you stay connected!</p>
-			</div>
-		</body>
-		</html>
-		`, student.Name)
-
-		_ = common.SendEmail(student.Email, "RSVP Registered - Rukhsat '26", declineEmailBody)
-
-		// Redirect to success page
-		http.Redirect(w, r, "/verification-success.html", http.StatusFound)
-		return
+		rsvpText = "No, I Can't Make It"
+		foodText = "N/A"
 	}
 
-	// If confirmed, generate dynamic entry QR code
-	qrData := fmt.Sprintf("RUKHSAT '26 ENTRY TICKET\nName: %s\nFood: %s\nStatus: Verified Attendee\nID: %s", 
-		student.Name, finalFoodPreference, student.ID.Hex())
-	
-	qrBytes, err := qrcode.Encode(qrData, qrcode.Medium, 256)
-	if err != nil {
-		w.Header().Set("Content-Type", "application/json")
-		w.WriteHeader(http.StatusInternalServerError)
-		json.NewEncoder(w).Encode(map[string]string{"error": "Failed to generate QR code: " + err.Error()})
-		return
+	foodPrefHtml := ""
+	if finalRSVPStatus == "confirmed" {
+		foodPrefHtml = fmt.Sprintf(`<p class="text" style="font-size: 15px; margin: 5px 0;"><strong>Meal Preference:</strong> %s</p>`, foodText)
 	}
 
-	// Read invitation card from filesystem
-	cardBytes, cardName, err := readInvitationCard()
-	if err != nil {
-		// Log warning but continue, we can send QR code even if attachment fails
-		fmt.Printf("Warning: Failed to load invitation card attachment: %v\n", err)
-	}
-
-	// Encode QR code bytes to base64 so we can embed it inline in the HTML body
-	qrBase64 := base64.StdEncoding.EncodeToString(qrBytes)
-
-	// Compose Email Body
-	htmlBody := fmt.Sprintf(`
+	emailBody := fmt.Sprintf(`
 	<!DOCTYPE html>
 	<html>
 	<head>
 		<meta charset="utf-8">
-		<title>Your Farewell Entry Ticket - Rukhsat '26</title>
+		<title>RSVP Confirmed - Rukhsat '26</title>
 		<style>
 			body { background-color: #fdfbf7; color: #2d2926; font-family: 'Inter', sans-serif; margin: 0; padding: 20px; }
-			.card { max-width: 600px; margin: 30px auto; background: #ffffff; border: 1px solid #c2945d; padding: 30px; border-radius: 4px; text-align: center; }
+			.card { max-width: 500px; margin: 40px auto; background: #ffffff; border: 1px solid #c2945d; box-shadow: 0 10px 25px rgba(45,41,38,0.08); padding: 30px; border-radius: 4px; text-align: center; }
 			.title { font-family: 'Georgia', serif; font-size: 24px; color: #7c3d49; margin-bottom: 20px; }
-			.text { font-size: 15px; line-height: 1.6; color: #5e5854; margin-bottom: 20px; text-align: left; }
-			.details-box { background: #eff2ef; border: 1px dashed #6b7a67; border-radius: 6px; padding: 15px; margin: 20px 0; text-align: left; }
-			.details-row { display: flex; justify-content: space-between; margin-bottom: 8px; font-size: 14px; }
-			.details-label { font-weight: bold; color: #6b7a67; }
-			.qr-img { margin: 20px auto; display: block; border: 4px solid #2d2926; border-radius: 4px; }
+			.text { font-size: 15px; line-height: 1.6; color: #5e5854; margin-bottom: 15px; }
+			.details-box { background: #eff2ef; border: 1px dashed #6b7a67; border-radius: 6px; padding: 20px; margin: 25px auto; max-width: 380px; text-align: left; }
 			.footer { font-size: 11px; color: #a17743; margin-top: 30px; border-top: 1px dashed rgba(194, 148, 93, 0.25); padding-top: 15px; }
 		</style>
 	</head>
 	<body>
 		<div class="card">
-			<div class="title">Rukhsat '26 Invitation Card</div>
-			<p class="text" style="text-align:center;">Congratulations! Your RSVP is verified.</p>
+			<div class="title">Rukhsat '26 RSVP Registered</div>
+			<p class="text">Hello <strong>%s</strong>,<br><br>Your RSVP response has been successfully registered and verified. Here are your selection details:</p>
 			
 			<div class="details-box">
-				<div class="details-row"><span class="details-label">Guest Name:</span><span>%s</span></div>
-				<div class="details-row"><span class="details-label">Attendance:</span><span style="color:#6b7a67; font-weight:bold;">Yes, Attending</span></div>
-				<div class="details-row"><span class="details-label">Meal Option:</span><span style="text-transform: uppercase;">%s</span></div>
+				<p class="text" style="font-size: 15px; margin: 5px 0;"><strong>Classmate:</strong> %s</p>
+				<p class="text" style="font-size: 15px; margin: 5px 0;"><strong>Attendance:</strong> %s</p>
+				%s
 			</div>
 
-			<p class="text" style="text-align:center;">Here is your entry ticket QR code. Please keep this email safe and present this QR code at the entry gate and food counters:</p>
-			
-			<img class="qr-img" src="data:image/png;base64,%s" alt="Entry QR Code" width="180" height="180">
-			
-			<p class="text" style="font-size:13px; text-align:center; font-style:italic;">Your personalized invitation card has been attached to this email.</p>
-			
+			<p class="text">We look forward to sharing these memorable farewell moments with you! Stay tuned for entry and counter food details.</p>
 			<div class="footer">
 				Rukhsat © Class of 2026. Keep these memories alive forever.
 			</div>
 		</div>
 	</body>
 	</html>
-	`, student.Name, finalFoodPreference, qrBase64)
+	`, student.Name, student.Name, rsvpText, foodPrefHtml)
 
-	// Send confirmation email with invitation attachment
-	if len(cardBytes) > 0 {
-		err = common.SendEmailWithAttachment(student.Email, "Your Farewell Invitation Ticket - Rukhsat '26", htmlBody, cardBytes, cardName)
-	} else {
-		// Fallback: send without attachment if invitation card is missing from repository
-		err = common.SendEmail(student.Email, "Your Farewell Invitation Ticket - Rukhsat '26", htmlBody)
-	}
-
+	// Send confirmation email
+	err = common.SendEmail(student.Email, "RSVP Registered - Rukhsat '26", emailBody)
 	if err != nil {
-		w.Header().Set("Content-Type", "application/json")
-		w.WriteHeader(http.StatusInternalServerError)
-		json.NewEncoder(w).Encode(map[string]string{"error": "RSVP was verified but failed to send invitation mail: " + err.Error()})
-		return
+		fmt.Printf("Warning: Failed to send RSVP registration mail: %v\n", err)
 	}
 
 	// Redirect to verification success screen
 	http.Redirect(w, r, "/verification-success.html", http.StatusFound)
 }
-
