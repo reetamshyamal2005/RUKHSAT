@@ -1677,22 +1677,19 @@ section {
 /* Floating RSVP Button Styles */
 .floating-rsvp-btn {
   position: fixed;
-  bottom: 30px;
+  top: 90px;
   right: 30px;
   background: var(--rose-burgundy);
   color: white !important;
   text-decoration: none;
-  padding: 12px 24px;
-  border-radius: 50px;
+  padding: 15px 25px;
+  border-radius: 12px;
   font-family: var(--font-sans);
   font-weight: 600;
-  font-size: 0.9rem;
-  letter-spacing: 1.5px;
-  text-transform: uppercase;
   display: flex;
   align-items: center;
-  gap: 10px;
-  box-shadow: 0 10px 25px rgba(124, 61, 73, 0.3), 3px 3px 0 var(--sepia-gold);
+  gap: 15px;
+  box-shadow: 0 10px 25px rgba(124, 61, 73, 0.3), 4px 4px 0 var(--sepia-gold);
   z-index: 1001;
   transition: all var(--transition-speed) ease;
   border: 2px solid var(--text-charcoal);
@@ -1701,27 +1698,26 @@ section {
 .floating-rsvp-btn:hover {
   transform: scale(1.05) translateY(-3px);
   background: var(--text-charcoal);
-  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.2), 5px 5px 0 var(--sepia-gold);
-}
-
-.rsvp-btn-seal {
-  width: 24px;
-  height: 24px;
-  background: var(--sticky-yellow);
-  color: var(--text-charcoal);
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-family: var(--font-cursive);
-  font-size: 0.75rem;
-  font-weight: bold;
-  border: 1px solid var(--text-charcoal);
-  transform: rotate(-10deg);
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.2), 6px 6px 0 var(--sepia-gold);
 }
 
 .rsvp-btn-text {
   color: white;
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  text-align: right;
+  line-height: 1.3;
+}
+
+.rsvp-btn-seal {
+  font-family: var(--font-title);
+  font-size: 2.2rem;
+  font-weight: bold;
+  color: var(--sticky-yellow);
+  text-shadow: 2px 2px 0px var(--text-charcoal);
+  letter-spacing: 2px;
+  line-height: 1;
 }
 
 @media (max-width: 768px) {
