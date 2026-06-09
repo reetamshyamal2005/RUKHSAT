@@ -272,9 +272,9 @@
         <!-- CSV Export section -->
         <div class="form-group" style="border-bottom: 1px dashed var(--border-sepia); padding-bottom: 2.5rem; margin-bottom: 2.5rem; text-align: center;">
           <h3 class="scribble" style="font-size: 1.8rem; color: var(--rose-burgundy); margin-bottom: 0.5rem;">Export Registry</h3>
-          <p style="font-size: 0.9rem; color: var(--text-muted); margin-bottom: 1.5rem;">Download a CSV spreadsheet showing RSVP choices, email addresses, and verification statuses of all invitees.</p>
+          <p style="font-size: 0.9rem; color: var(--text-muted); margin-bottom: 1.5rem;">Download an Excel spreadsheet (.xlsx) showing RSVP choices, email addresses, and verification statuses of all invitees.</p>
           <button id="admin-export-btn" class="submit-pin-btn" style="width: auto; padding: 0.8rem 2.5rem; display: inline-flex; align-items: center; justify-content: center; gap: 8px;">
-            Export & Download RSVP CSV
+            Export & Download RSVP XLSX
           </button>
         </div>
 
@@ -409,7 +409,7 @@
           document.getElementById('admin-secret').focus();
           return;
         }
-        window.location.href = '/api/admin/invitees?format=csv&secret=' + encodeURIComponent(secret);
+        window.location.href = '/api/admin/invitees?format=xlsx&secret=' + encodeURIComponent(secret);
       });
 
       // Handle CSV Import

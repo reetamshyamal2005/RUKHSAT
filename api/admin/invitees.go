@@ -4,12 +4,14 @@ import (
 	"context"
 	"encoding/csv"
 	"encoding/json"
+	"fmt"
 	"io"
 	"net/http"
 	"os"
 	"strings"
 	"time"
 
+	"github.com/xuri/excelize/v2"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
@@ -183,41 +185,51 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
-		if r.URL.Query().Get("format") == "csv" {
-			// Set headers for file download
-			w.Header().Set("Content-Type", "text/csv")
-			w.Header().Set("Content-Disposition", "attachment; filename=rukhsat-rsvp-export.csv")
+		if format := r.URL.Query().Get("format"); format == "csv" || format == "xlsx" {
+			w.Header().Set("Content-Type", "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
+			w.Header().Set("Content-Disposition", "attachment; filename=rukhsat-rsvp-export.xlsx")
 
-			writer := csv.NewWriter(w)
-			writer.Write([]string{"Timestamp", "Email address", "Name", "Dept", "Whatsapp Number", "Year", "Food Preference", "Unique_id"})
+			f := excelize.NewFile()
+			sheetName := "Sheet1"
+			// Write Headers
+			headers := []interface{}{"Timestamp", "Email address", "Name", "Dept", "Whatsapp Number", "Year", "Food Preference", "Unique_id"}
+			f.SetSheetRow(sheetName, "A1", &headers)
 
+			rowIdx := 2
 			for _, s := range students {
 				if !s.Verified {
 					continue // Only export verified RSVPs for the scanner app
 				}
-				
+
 				foodPrefStr := "Vegetarian"
 				if s.FoodPreference == "non-veg" {
 					foodPrefStr = "Non-Vegetarian"
 				}
 
-				// The unique code serves as the scanner entry pass
 				uniqueId := s.UniqueCode
 
-				writer.Write([]string{
-					time.Now().Format("02/01/2006 15:04:05"), // Timestamp approximation
+				row := []interface{}{
+					time.Now().Format("02/01/2006 15:04:05"),
 					s.Email,
 					s.Name,
-					"IT", // Dept default
+					"IT",
 					s.Phone,
-					"4th", // Year default
+					"4th",
 					foodPrefStr,
 					uniqueId,
-				})
+				}
+				cell := fmt.Sprintf("A%d", rowIdx)
+				f.SetSheetRow(sheetName, cell, &row)
+				rowIdx++
 			}
-			writer.Flush()
+
+			if err := f.Write(w); err != nil {
+				fmt.Printf("Error writing excel file: %v\n", err)
+			}
 			return
 		}
+
+
 
 		// Default: Return JSON response
 		w.Header().Set("Content-Type", "application/json")
