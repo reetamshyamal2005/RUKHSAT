@@ -317,7 +317,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (modalCategory) modalCategory.textContent = videoData.category;
     if (modalTitle) modalTitle.textContent = videoData.title;
     if (modalDesc) modalDesc.textContent = videoData.description;
-    if (modalIframe) modalIframe.src = `https://drive.google.com/file/d/${videoData.id}/preview`;
+    if (modalIframe) modalIframe.src = videoData.url;
     
     modal.classList.remove('hidden');
     document.body.style.overflow = 'hidden'; 

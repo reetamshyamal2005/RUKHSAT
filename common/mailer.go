@@ -22,12 +22,13 @@ func SendEmail(to, subject, htmlBody string) error {
 	auth := smtp.PlainAuth("", smtpUser, smtpPass, smtpHost)
 
 	// Compose the MIME email header and body
-	msg := []byte(fmt.Sprintf("To: %s\r\n"+
+	msg := []byte(fmt.Sprintf("From: Rukhsat Farewell '26 <%s>\r\n"+
+		"To: %s\r\n"+
 		"Subject: %s\r\n"+
 		"MIME-Version: 1.0\r\n"+
 		"Content-Type: text/html; charset=UTF-8\r\n"+
 		"\r\n"+
-		"%s\r\n", to, subject, htmlBody))
+		"%s\r\n", smtpUser, to, subject, htmlBody))
 
 	// Send mail via STARTTLS
 	addr := smtpHost + ":" + smtpPort
@@ -53,6 +54,7 @@ func SendEmailWithAttachment(to, subject, htmlBody string, attachmentBytes []byt
 
 	// Compose MIME headers
 	header := ""
+	header += fmt.Sprintf("From: Rukhsat Farewell '26 <%s>\r\n", smtpUser)
 	header += fmt.Sprintf("To: %s\r\n", to)
 	header += fmt.Sprintf("Subject: %s\r\n", subject)
 	header += "MIME-Version: 1.0\r\n"
