@@ -168,9 +168,19 @@ func init() {
 						}
 
 						var matches []common.Student
-						queryLower := strings.ToLower(query)
+						queryParts := strings.Fields(strings.ToLower(query))
+						
 						for _, s := range students {
-							if strings.Contains(strings.ToLower(s.Name), queryLower) {
+							nameLower := strings.ToLower(s.Name)
+							match := true
+							for _, part := range queryParts {
+								if !strings.Contains(nameLower, part) {
+									match = false
+									break
+								}
+							}
+							
+							if match {
 								matches = append(matches, s)
 								if len(matches) >= 8 {
 									break
@@ -257,6 +267,9 @@ func init() {
 						"foodPreference": &graphql.ArgumentConfig{
 							Type: graphql.String,
 						},
+						"phone": &graphql.ArgumentConfig{
+							Type: graphql.String,
+						},
 					},
 					Resolve: func(p graphql.ResolveParams) (interface{}, error) {
 						studentIdStr := p.Args["studentId"].(string)
@@ -264,6 +277,10 @@ func init() {
 						foodPreference := ""
 						if fPref, ok := p.Args["foodPreference"].(string); ok {
 							foodPreference = fPref
+						}
+						phone := ""
+						if ph, ok := p.Args["phone"].(string); ok {
+							phone = ph
 						}
 
 						if rsvpStatus != "confirmed" && rsvpStatus != "declined" {
@@ -307,6 +324,7 @@ func init() {
 								"verificationToken":    token,
 								"pendingRsvpStatus":    rsvpStatus,
 								"pendingFoodPref":      foodPreference,
+								"pendingPhone":         phone,
 								"lastVerificationSent": time.Now(),
 							},
 						}

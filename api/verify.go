@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"math/rand"
 	"net/http"
 	"time"
 
@@ -68,19 +69,39 @@ func VerifyHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// Update student to confirmed/declined status and remove temporary verification fields
+	// Generate Unique Code
 	finalRSVPStatus := student.PendingRSVPStatus
 	finalFoodPreference := student.PendingFoodPref
+	finalPhone := student.PendingPhone
+
+	uniqueCode := student.UniqueCode
+	if uniqueCode == "" && finalRSVPStatus == "confirmed" {
+		last3 := "000"
+		if len(finalPhone) >= 3 {
+			last3 = finalPhone[len(finalPhone)-3:]
+		}
+		foodChar := "V"
+		if finalFoodPreference == "non-veg" {
+			foodChar = "NV"
+		}
+		rand.Seed(time.Now().UnixNano())
+		randNum := rand.Intn(900) + 100 // ensures 3 digits
+		uniqueCode = fmt.Sprintf("%d-%s-%s", randNum, last3, foodChar)
+	}
 
 	update := bson.M{
 		"$set": bson.M{
 			"rsvpStatus":     finalRSVPStatus,
 			"foodPreference": finalFoodPreference,
+			"phone":          finalPhone,
+			"uniqueCode":     uniqueCode,
 			"verified":       true,
 		},
 		"$unset": bson.M{
 			"verificationToken": "",
 			"pendingRsvpStatus": "",
 			"pendingFoodPref":   "",
+			"pendingPhone":      "",
 		},
 	}
 
@@ -111,6 +132,19 @@ func VerifyHandler(w http.ResponseWriter, r *http.Request) {
 		foodPrefHtml = fmt.Sprintf(`<p class="text" style="font-size: 15px; margin: 5px 0;"><strong>Meal Preference:</strong> %s</p>`, foodText)
 	}
 
+	qrHtml := ""
+	if finalRSVPStatus == "confirmed" && uniqueCode != "" {
+		qrUrl := fmt.Sprintf("https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=%s", uniqueCode)
+		qrHtml = fmt.Sprintf(`
+			<div style="margin: 30px auto; padding: 20px; background: #fff; border: 2px solid #7c3d49; border-radius: 8px; max-width: 250px;">
+				<h4 style="margin: 0 0 15px 0; color: #7c3d49; font-family: 'Georgia', serif;">Your Entry Pass</h4>
+				<img src="%s" alt="QR Code" style="width: 200px; height: 200px; display: block; margin: 0 auto;">
+				<p style="margin: 15px 0 0 0; font-family: monospace; font-size: 16px; font-weight: bold; color: #2d2926;">%s</p>
+			</div>
+			<p class="text">Please show this QR code at the entrance desk.</p>
+		`, qrUrl, uniqueCode)
+	}
+
 	emailBody := fmt.Sprintf(`
 	<!DOCTYPE html>
 	<html>
@@ -137,6 +171,8 @@ func VerifyHandler(w http.ResponseWriter, r *http.Request) {
 				%s
 			</div>
 
+			%s
+
 			<p class="text">We look forward to sharing these memorable farewell moments with you! Stay tuned for entry and counter food details.</p>
 			<div class="footer">
 				Rukhsat © Class of 2026. Keep these memories alive forever.
@@ -144,7 +180,7 @@ func VerifyHandler(w http.ResponseWriter, r *http.Request) {
 		</div>
 	</body>
 	</html>
-	`, student.Name, student.Name, rsvpText, foodPrefHtml)
+	`, student.Name, student.Name, rsvpText, foodPrefHtml, qrHtml)
 
 	// Send confirmation email
 	err = common.SendEmail(student.Email, "RSVP Registered - Rukhsat '26", emailBody)

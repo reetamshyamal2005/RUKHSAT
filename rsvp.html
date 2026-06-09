@@ -81,6 +81,15 @@
               <span class="student-pill-name">Selected: Reetam Shyamal</span>
               <button type="button" id="clear-student-btn" class="clear-pill-btn">&times;</button>
             </div>
+            
+            <!-- Privacy RSVP Done Card -->
+            <div id="rsvp-privacy-card" class="rsvp-privacy-card hidden">
+              <div class="privacy-card-inner">
+                <span class="privacy-card-icon">🌸</span>
+                <h4 class="privacy-card-title scribble">"RSVP Completed!"</h4>
+                <p class="privacy-card-text">Your RSVP has already been completed and verified. See you soon!</p>
+              </div>
+            </div>
           </div>
 
           <!-- Step 2: Attendance Details -->
@@ -120,6 +129,14 @@
                     <h5 class="choice-title">Non-Vegetarian</h5>
                   </div>
                 </div>
+              </div>
+            </div>
+
+            <div id="phone-number-section" class="phone-number-section hidden" style="margin-top: 1.5rem;">
+              <h4 class="food-section-title">WhatsApp Number</h4>
+              <p class="step-instruction" style="font-size: 0.9rem; margin-bottom: 0.8rem;">Required for your unique QR entry pass.</p>
+              <div class="search-wrapper" style="max-width: 100%;">
+                <input type="tel" id="student-phone-input" placeholder="Enter 10-digit number..." pattern="[0-9]{10}" maxlength="10" style="padding-left: 1.5rem; width: 100%; border: 2px solid var(--text-charcoal); border-radius: 4px; padding: 0.8rem 1.5rem; background: var(--bg-linen); outline: none;" required>
               </div>
             </div>
           </div>

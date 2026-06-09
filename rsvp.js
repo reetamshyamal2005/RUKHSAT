@@ -8,9 +8,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
   const stepDetails = document.getElementById('step-details');
   const stepVerify = document.getElementById('step-verify');
+  const privacyCard = document.getElementById('rsvp-privacy-card');
 
   const attendanceCards = document.querySelectorAll('.attendance-card');
   const foodPreferenceSection = document.getElementById('food-preference-section');
+  const phoneNumberSection = document.getElementById('phone-number-section');
   const foodCards = document.querySelectorAll('.food-card');
 
   const emailMasked = document.getElementById('student-email-masked');
@@ -44,6 +46,10 @@ document.addEventListener('DOMContentLoaded', () => {
     return `${name.slice(0, 3)}***@${domain}`;
   }
 
+  // Auto-suggest student name search variables
+  let activeIndex = -1;
+  let suggestionItems = [];
+
   // Auto-suggest student name search
   if (searchInput) {
     searchInput.addEventListener('input', () => {
@@ -53,6 +59,12 @@ document.addEventListener('DOMContentLoaded', () => {
       if (query.length < 2) {
         hideDropdown();
         return;
+      }
+
+      // Show searching indicator immediately to make UX feel alive and seamless
+      if (dropdown) {
+        dropdown.innerHTML = '<div class="autocomplete-item text-muted" style="text-align: center; font-style: italic;">🔍 Searching classmates...</div>';
+        showDropdown();
       }
 
       debounceTimeout = setTimeout(() => {
@@ -88,8 +100,35 @@ document.addEventListener('DOMContentLoaded', () => {
           })
           .catch(err => {
             console.error('Failed to fetch students:', err);
+            if (dropdown) {
+              dropdown.innerHTML = '<div class="autocomplete-item text-muted" style="text-align: center; color: var(--rose-burgundy);">Failed to fetch search results</div>';
+            }
           });
-      }, 300);
+      }, 200); // reduced debounce from 300ms to 200ms for faster feedback
+    });
+
+    // Keyboard navigation listener (ArrowUp, ArrowDown, Enter, Escape)
+    searchInput.addEventListener('keydown', (e) => {
+      if (!dropdown || dropdown.classList.contains('hidden') || suggestionItems.length === 0) return;
+
+      if (e.key === 'ArrowDown') {
+        e.preventDefault();
+        activeIndex = (activeIndex + 1) % suggestionItems.length;
+        updateHighlight();
+      } else if (e.key === 'ArrowUp') {
+        e.preventDefault();
+        activeIndex = (activeIndex - 1 + suggestionItems.length) % suggestionItems.length;
+        updateHighlight();
+      } else if (e.key === 'Enter') {
+        e.preventDefault();
+        if (activeIndex > -1 && activeIndex < suggestionItems.length) {
+          const selectedItem = suggestionItems[activeIndex];
+          const studentData = JSON.parse(selectedItem.getAttribute('data-student'));
+          selectStudent(studentData);
+        }
+      } else if (e.key === 'Escape') {
+        hideDropdown();
+      }
     });
 
     // Close dropdown on click outside
@@ -100,9 +139,22 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
+  function updateHighlight() {
+    suggestionItems.forEach((item, index) => {
+      if (index === activeIndex) {
+        item.classList.add('highlighted');
+        item.scrollIntoView({ block: 'nearest' });
+      } else {
+        item.classList.remove('highlighted');
+      }
+    });
+  }
+
   function renderSuggestions(students) {
     if (!dropdown) return;
     dropdown.innerHTML = '';
+    suggestionItems = [];
+    activeIndex = -1;
 
     if (!students || students.length === 0) {
       dropdown.innerHTML = '<div class="autocomplete-item scribble" style="text-align: center; color: var(--rose-burgundy);">"No names match your query..."</div>';
@@ -113,6 +165,8 @@ document.addEventListener('DOMContentLoaded', () => {
     students.forEach(student => {
       const item = document.createElement('div');
       item.className = 'autocomplete-item';
+      item.setAttribute('data-student', JSON.stringify(student));
+      
       if (student.verified) {
         item.textContent = `${student.name} (RSVP Done)`;
         item.style.color = 'var(--sage-green)';
@@ -120,8 +174,10 @@ document.addEventListener('DOMContentLoaded', () => {
       } else {
         item.textContent = student.name;
       }
+      
       item.addEventListener('click', () => selectStudent(student));
       dropdown.appendChild(item);
+      suggestionItems.push(item);
     });
 
     showDropdown();
@@ -133,6 +189,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   function hideDropdown() {
     dropdown?.classList.add('hidden');
+    activeIndex = -1;
   }
 
   // Select student card
@@ -147,46 +204,24 @@ document.addEventListener('DOMContentLoaded', () => {
       if (pillNameSpan) pillNameSpan.textContent = `Selected: ${student.name} (RSVP Completed)`;
       selectedPill?.classList.remove('hidden');
 
-      if (emailMasked) emailMasked.textContent = maskEmail(student.email);
+      // Hide subsequent steps completely for privacy
+      stepDetails?.classList.add('hidden');
+      stepVerify?.classList.add('hidden');
 
-      // Select and Lock step details
-      attendanceCards.forEach(c => {
-        c.classList.remove('active');
-        if (c.getAttribute('data-val') === student.rsvpStatus) {
-          c.classList.add('active');
-        }
-      });
-      state.attendance = student.rsvpStatus;
-
-      // Select food pref if confirmed
-      if (student.rsvpStatus === 'confirmed') {
-        foodPreferenceSection?.classList.remove('hidden');
-        foodCards.forEach(c => {
-          c.classList.remove('active');
-          if (c.getAttribute('data-val') === student.foodPreference) {
-            c.classList.add('active');
-          }
-        });
-        state.foodPreference = student.foodPreference;
-      } else {
-        foodPreferenceSection?.classList.add('hidden');
-      }
-
-      stepDetails?.classList.remove('locked');
-      stepVerify?.classList.remove('locked');
-
-      const verificationText = document.getElementById('verification-text');
-      if (verificationText) verificationText.textContent = "You have already completed and verified your RSVP on our list! Thank you.";
-
-      if (submitBtn) {
-        submitBtn.textContent = "RSVP Already Confirmed";
-        submitBtn.disabled = true;
-      }
+      // Show privacy card
+      privacyCard?.classList.remove('hidden');
     } else {
       if (pillNameSpan) pillNameSpan.textContent = `Selected: ${student.name}`;
       selectedPill?.classList.remove('hidden');
 
       if (emailMasked) emailMasked.textContent = maskEmail(student.email);
+
+      // Make sure steps are visible
+      stepDetails?.classList.remove('hidden');
+      stepVerify?.classList.remove('hidden');
+
+      // Hide privacy card
+      privacyCard?.classList.add('hidden');
 
       // Unlock Step 2
       stepDetails?.classList.remove('locked');
@@ -213,12 +248,20 @@ document.addEventListener('DOMContentLoaded', () => {
       foodCards.forEach(c => c.classList.remove('active'));
       document.querySelector('.food-card[data-val="veg"]')?.classList.add('active');
       foodPreferenceSection?.classList.add('hidden');
+      phoneNumberSection?.classList.add('hidden');
 
       selectedPill?.classList.add('hidden');
       if (searchInput) {
         searchInput.classList.remove('hidden');
         searchInput.focus();
       }
+
+      // Hide privacy card
+      privacyCard?.classList.add('hidden');
+
+      // Reset visibility of steps
+      stepDetails?.classList.remove('hidden');
+      stepVerify?.classList.remove('hidden');
 
       // Reset step instruction texts & button
       const verificationText = document.getElementById('verification-text');
@@ -248,8 +291,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
       if (attendanceVal === 'confirmed') {
         foodPreferenceSection?.classList.remove('hidden');
+        phoneNumberSection?.classList.remove('hidden');
       } else {
         foodPreferenceSection?.classList.add('hidden');
+        phoneNumberSection?.classList.add('hidden');
       }
 
       // Unlock Step 3
@@ -281,10 +326,14 @@ document.addEventListener('DOMContentLoaded', () => {
       // Show loader
       statusOverlay?.classList.remove('hidden');
 
+      const phoneInput = document.getElementById('student-phone-input');
+      const phoneVal = phoneInput ? phoneInput.value.trim() : '';
+
       const payload = {
         studentId: state.selectedStudent.id,
         rsvpStatus: state.attendance,
-        foodPreference: state.attendance === 'confirmed' ? state.foodPreference : ''
+        foodPreference: state.attendance === 'confirmed' ? state.foodPreference : '',
+        phone: phoneVal
       };
 
       fetch('/api/graphql', {
@@ -294,8 +343,8 @@ document.addEventListener('DOMContentLoaded', () => {
         },
         body: JSON.stringify({
           query: `
-            mutation SubmitRSVP($studentId: ID!, $rsvpStatus: String!, $foodPreference: String) {
-              submitRSVP(studentId: $studentId, rsvpStatus: $rsvpStatus, foodPreference: $foodPreference) {
+            mutation SubmitRSVP($studentId: ID!, $rsvpStatus: String!, $foodPreference: String, $phone: String) {
+              submitRSVP(studentId: $studentId, rsvpStatus: $rsvpStatus, foodPreference: $foodPreference, phone: $phone) {
                 id
                 rsvpStatus
               }
@@ -304,7 +353,8 @@ document.addEventListener('DOMContentLoaded', () => {
           variables: {
             studentId: state.selectedStudent.id,
             rsvpStatus: state.attendance,
-            foodPreference: state.attendance === 'confirmed' ? state.foodPreference : ''
+            foodPreference: state.attendance === 'confirmed' ? state.foodPreference : '',
+            phone: phoneVal
           }
         })
       })

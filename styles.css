@@ -2030,9 +2030,10 @@ section {
   border-bottom: none;
 }
 
-.autocomplete-item:hover {
+.autocomplete-item:hover,
+.autocomplete-item.highlighted {
   background: var(--rose-burgundy-light);
-  color: var(--rose-burgundy);
+  color: var(--rose-burgundy) !important;
 }
 
 /* Selected student pill styling */
@@ -2342,5 +2343,40 @@ section {
   }
 }
 
+/* Privacy RSVP Completed Card Styles */
+.rsvp-privacy-card {
+  margin-top: 25px;
+  background-color: var(--sage-green-light);
+  border: 1px dashed var(--sage-green);
+  border-radius: 8px;
+  padding: 25px 20px;
+  text-align: center;
+  animation: fadeIn 0.4s ease;
+}
 
+.privacy-card-inner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
 
+.privacy-card-icon {
+  font-size: 2rem;
+  margin-bottom: 10px;
+}
+
+.privacy-card-title {
+  font-size: 1.8rem;
+  color: var(--sage-green);
+  margin-bottom: 8px;
+  font-family: var(--font-title);
+  font-weight: 600;
+}
+
+.privacy-card-text {
+  font-size: 1.05rem;
+  color: var(--text-charcoal);
+  font-family: var(--font-serif);
+  line-height: 1.5;
+}

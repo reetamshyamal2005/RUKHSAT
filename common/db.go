@@ -31,6 +31,9 @@ type Student struct {
 	VerificationToken    string             `bson:"verificationToken,omitempty" json:"-"`
 	PendingRSVPStatus    string             `bson:"pendingRsvpStatus,omitempty" json:"-"`
 	PendingFoodPref      string             `bson:"pendingFoodPref,omitempty" json:"-"`
+	PendingPhone         string             `bson:"pendingPhone,omitempty" json:"-"`
+	Phone                string             `bson:"phone" json:"phone"`
+	UniqueCode           string             `bson:"uniqueCode" json:"uniqueCode"`
 	LastVerificationSent time.Time          `bson:"lastVerificationSent,omitempty" json:"-"`
 }
 
@@ -137,7 +140,7 @@ type MemoryCache struct {
 
 var (
 	globalCache MemoryCache
-	cacheTTL    = 5 * time.Minute
+	cacheTTL    = 5 * time.Second
 )
 
 func GetCachedStudents() ([]Student, error) {

@@ -86,13 +86,13 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
-		// Map columns
+		// Map columns flexibly (substring match)
 		nameIdx, emailIdx := -1, -1
 		for i, h := range header {
 			hClean := strings.ToLower(strings.TrimSpace(h))
-			if hClean == "name" {
+			if strings.Contains(hClean, "name") {
 				nameIdx = i
-			} else if hClean == "email" {
+			} else if strings.Contains(hClean, "email") || strings.Contains(hClean, "mail") {
 				emailIdx = i
 			}
 		}
@@ -100,7 +100,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 		if nameIdx == -1 || emailIdx == -1 {
 			w.Header().Set("Content-Type", "application/json")
 			w.WriteHeader(http.StatusBadRequest)
-			json.NewEncoder(w).Encode(map[string]string{"error": "CSV must contain 'name' and 'email' columns"})
+			json.NewEncoder(w).Encode(map[string]string{"error": "CSV must contain columns representing 'Name' and 'Email'"})
 			return
 		}
 
@@ -189,19 +189,30 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 			w.Header().Set("Content-Disposition", "attachment; filename=rukhsat-rsvp-export.csv")
 
 			writer := csv.NewWriter(w)
-			writer.Write([]string{"Name", "Email", "RSVP Status", "Food Preference", "Verified"})
+			writer.Write([]string{"Timestamp", "Email address", "Name", "Dept", "Whatsapp Number", "Year", "Food Preference", "Unique_id"})
 
 			for _, s := range students {
-				verifiedStr := "No"
-				if s.Verified {
-					verifiedStr = "Yes"
+				if !s.Verified {
+					continue // Only export verified RSVPs for the scanner app
 				}
+				
+				foodPrefStr := "Vegetarian"
+				if s.FoodPreference == "non-veg" {
+					foodPrefStr = "Non-Vegetarian"
+				}
+
+				// The unique code serves as the scanner entry pass
+				uniqueId := s.UniqueCode
+
 				writer.Write([]string{
-					s.Name,
+					time.Now().Format("02/01/2006 15:04:05"), // Timestamp approximation
 					s.Email,
-					s.RSVPStatus,
-					s.FoodPreference,
-					verifiedStr,
+					s.Name,
+					"IT", // Dept default
+					s.Phone,
+					"4th", // Year default
+					foodPrefStr,
+					uniqueId,
 				})
 			}
 			writer.Flush()

@@ -409,7 +409,7 @@
           document.getElementById('admin-secret').focus();
           return;
         }
-        window.location.href = '/api/admin/invitees?secret=' + encodeURIComponent(secret);
+        window.location.href = '/api/admin/invitees?format=csv&secret=' + encodeURIComponent(secret);
       });
 
       // Handle CSV Import
