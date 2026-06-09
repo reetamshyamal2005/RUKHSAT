@@ -59,8 +59,10 @@ document.addEventListener('DOMContentLoaded', () => {
   const heroTypingText = document.getElementById('hero-typing-text');
   if (heroTypingText) {
     const heroMessages = [
-      'A tapestry of late nights, shared laughs, and memories that became family.',
-      'Every little moment here is a page from our favorite chapter.',
+      "Goodbyes are not forever; they are simply 'see you later'",
+      "A chapter ends, a lifetime of memories remains.",
+      "Years will pass, faces may change, but these moments will remain timeless.",
+      "From strangers to friends, from friends to family - this is our story.",
     ];
     let messageIndex = 0;
     let currentCharIndex = 0;
