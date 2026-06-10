@@ -306,6 +306,7 @@
                 <th>Email</th>
                 <th>RSVP</th>
                 <th>Food</th>
+                <th>Read</th>
                 <th>Action</th>
               </tr>
             </thead>
@@ -738,6 +739,7 @@
                   email
                   rsvpStatus
                   foodPreference
+                  likesReading
                   verified
                 }
               }
@@ -754,7 +756,7 @@
             const data = result.data.listInvitees;
             inviteesTbody.innerHTML = '';
             if (data.length === 0) {
-              inviteesTbody.innerHTML = `<tr><td colspan="5" style="text-align: center; color: var(--text-muted); padding: 20px 10px;">No invitees found in database.</td></tr>`;
+              inviteesTbody.innerHTML = `<tr><td colspan="6" style="text-align: center; color: var(--text-muted); padding: 20px 10px;">No invitees found in database.</td></tr>`;
               return;
             }
 
@@ -775,11 +777,17 @@
                 foodPref = item.foodPreference === 'veg' ? '🥦 Veg' : '🥩 Non-Veg';
               }
 
+              let readingPref = '-';
+              if (item.likesReading) {
+                readingPref = item.likesReading === 'yes' ? '<span style="color: #388e3c;">📖 Yes</span>' : '<span style="color: #7c3d49;">✖ No</span>';
+              }
+
               tr.innerHTML = `
                 <td style="font-weight: 500;">${item.name}</td>
                 <td style="word-break: break-all;">${item.email}</td>
                 <td>${rsvpBadge}</td>
                 <td>${foodPref}</td>
+                <td>${readingPref}</td>
                 <td>
                   <button class="btn-delete" data-id="${item.id}">Delete</button>
                 </td>

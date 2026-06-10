@@ -2,9 +2,9 @@ package handler
 
 import (
 	"context"
+	"crypto/sha256"
 	"encoding/json"
 	"fmt"
-	"math/rand"
 	"net/http"
 	"time"
 
@@ -72,36 +72,32 @@ func VerifyHandler(w http.ResponseWriter, r *http.Request) {
 	// Generate Unique Code
 	finalRSVPStatus := student.PendingRSVPStatus
 	finalFoodPreference := student.PendingFoodPref
+	finalLikesReading := student.PendingLikesReading
 	finalPhone := student.PendingPhone
 
 	uniqueCode := student.UniqueCode
 	if uniqueCode == "" && finalRSVPStatus == "confirmed" {
-		last3 := "000"
-		if len(finalPhone) >= 3 {
-			last3 = finalPhone[len(finalPhone)-3:]
-		}
-		foodChar := "V"
-		if finalFoodPreference == "non-veg" {
-			foodChar = "NV"
-		}
-		rand.Seed(time.Now().UnixNano())
-		randNum := rand.Intn(900) + 100 // ensures 3 digits
-		uniqueCode = fmt.Sprintf("%d-%s-%s", randNum, last3, foodChar)
+		// Use SHA-256 to generate a strong, unique, and non-predictable ID
+		data := fmt.Sprintf("%s-%s-%d", student.ID.Hex(), student.Email, time.Now().UnixNano())
+		hash := sha256.Sum256([]byte(data))
+		uniqueCode = fmt.Sprintf("%x", hash)
 	}
 
 	update := bson.M{
 		"$set": bson.M{
 			"rsvpStatus":     finalRSVPStatus,
 			"foodPreference": finalFoodPreference,
+			"likesReading":   finalLikesReading,
 			"phone":          finalPhone,
 			"uniqueCode":     uniqueCode,
 			"verified":       true,
 		},
 		"$unset": bson.M{
-			"verificationToken": "",
-			"pendingRsvpStatus": "",
-			"pendingFoodPref":   "",
-			"pendingPhone":      "",
+			"verificationToken":   "",
+			"pendingRsvpStatus":   "",
+			"pendingFoodPref":     "",
+			"pendingLikesReading": "",
+			"pendingPhone":        "",
 		},
 	}
 
@@ -134,15 +130,21 @@ func VerifyHandler(w http.ResponseWriter, r *http.Request) {
 
 	qrHtml := ""
 	if finalRSVPStatus == "confirmed" && uniqueCode != "" {
-		qrUrl := fmt.Sprintf("https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=%s", uniqueCode)
+		// Use local QR generator with logo overlay
+		host := r.Host
+		scheme := "https"
+		if r.TLS == nil && r.Header.Get("X-Forwarded-Proto") != "https" {
+			scheme = "http"
+		}
+		qrUrl := fmt.Sprintf("%s://%s/api/qr?data=%s", scheme, host, uniqueCode)
+		
 		qrHtml = fmt.Sprintf(`
 			<div style="margin: 30px auto; padding: 20px; background: #fff; border: 2px solid #7c3d49; border-radius: 8px; max-width: 250px;">
 				<h4 style="margin: 0 0 15px 0; color: #7c3d49; font-family: 'Georgia', serif;">Your Entry Pass</h4>
 				<img src="%s" alt="QR Code" style="width: 200px; height: 200px; display: block; margin: 0 auto;">
-				<p style="margin: 15px 0 0 0; font-family: monospace; font-size: 16px; font-weight: bold; color: #2d2926;">%s</p>
 			</div>
 			<p class="text">Please show this QR code at the entrance desk.</p>
-		`, qrUrl, uniqueCode)
+		`, qrUrl)
 	}
 
 	emailBody := fmt.Sprintf(`

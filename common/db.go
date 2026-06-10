@@ -27,10 +27,12 @@ type Student struct {
 	Email                string             `bson:"email" json:"email"`
 	RSVPStatus           string             `bson:"rsvpStatus" json:"rsvpStatus"`         // pending, confirmed, declined
 	FoodPreference       string             `bson:"foodPreference" json:"foodPreference"` // veg, non-veg
+	LikesReading         string             `bson:"likesReading" json:"likesReading"`     // yes, no
 	Verified             bool               `bson:"verified" json:"verified"`
 	VerificationToken    string             `bson:"verificationToken,omitempty" json:"-"`
 	PendingRSVPStatus    string             `bson:"pendingRsvpStatus,omitempty" json:"-"`
 	PendingFoodPref      string             `bson:"pendingFoodPref,omitempty" json:"-"`
+	PendingLikesReading  string             `bson:"pendingLikesReading,omitempty" json:"-"`
 	PendingPhone         string             `bson:"pendingPhone,omitempty" json:"-"`
 	Phone                string             `bson:"phone" json:"phone"`
 	UniqueCode           string             `bson:"uniqueCode" json:"uniqueCode"`

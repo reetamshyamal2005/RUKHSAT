@@ -13,7 +13,9 @@ document.addEventListener('DOMContentLoaded', () => {
   const attendanceCards = document.querySelectorAll('.attendance-card');
   const foodPreferenceSection = document.getElementById('food-preference-section');
   const phoneNumberSection = document.getElementById('phone-number-section');
+  const readingPreferenceSection = document.getElementById('reading-preference-section');
   const foodCards = document.querySelectorAll('.food-card');
+  const readingCards = document.querySelectorAll('.reading-card');
 
   const emailMasked = document.getElementById('student-email-masked');
   const submitBtn = document.getElementById('rsvp-submit-btn');
@@ -27,6 +29,7 @@ document.addEventListener('DOMContentLoaded', () => {
     selectedStudent: null,
     attendance: null,       // 'confirmed' | 'declined'
     foodPreference: 'veg',  // 'veg' | 'non-veg'
+    likesReading: 'yes'     // 'yes' | 'no'
   };
 
   // Debouncing helper
@@ -292,9 +295,11 @@ document.addEventListener('DOMContentLoaded', () => {
       if (attendanceVal === 'confirmed') {
         foodPreferenceSection?.classList.remove('hidden');
         phoneNumberSection?.classList.remove('hidden');
+        readingPreferenceSection?.classList.remove('hidden');
       } else {
         foodPreferenceSection?.classList.add('hidden');
         phoneNumberSection?.classList.add('hidden');
+        readingPreferenceSection?.classList.add('hidden');
       }
 
       // Unlock Step 3
@@ -316,6 +321,19 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   });
 
+  // Reading card selection
+  readingCards.forEach(card => {
+    card.addEventListener('click', () => {
+      if (readingPreferenceSection?.classList.contains('hidden')) return;
+      if (state.selectedStudent && state.selectedStudent.verified) return;
+
+      readingCards.forEach(c => c.classList.remove('active'));
+      card.classList.add('active');
+
+      state.likesReading = card.getAttribute('data-val');
+    });
+  });
+
   // Submit RSVP Form
   if (rsvpForm) {
     rsvpForm.addEventListener('submit', (e) => {
@@ -329,13 +347,6 @@ document.addEventListener('DOMContentLoaded', () => {
       const phoneInput = document.getElementById('student-phone-input');
       const phoneVal = phoneInput ? phoneInput.value.trim() : '';
 
-      const payload = {
-        studentId: state.selectedStudent.id,
-        rsvpStatus: state.attendance,
-        foodPreference: state.attendance === 'confirmed' ? state.foodPreference : '',
-        phone: phoneVal
-      };
-
       fetch('/api/graphql', {
         method: 'POST',
         headers: {
@@ -343,8 +354,8 @@ document.addEventListener('DOMContentLoaded', () => {
         },
         body: JSON.stringify({
           query: `
-            mutation SubmitRSVP($studentId: ID!, $rsvpStatus: String!, $foodPreference: String, $phone: String) {
-              submitRSVP(studentId: $studentId, rsvpStatus: $rsvpStatus, foodPreference: $foodPreference, phone: $phone) {
+            mutation SubmitRSVP($studentId: ID!, $rsvpStatus: String!, $foodPreference: String, $phone: String, $likesReading: String) {
+              submitRSVP(studentId: $studentId, rsvpStatus: $rsvpStatus, foodPreference: $foodPreference, phone: $phone, likesReading: $likesReading) {
                 id
                 rsvpStatus
               }
@@ -354,7 +365,8 @@ document.addEventListener('DOMContentLoaded', () => {
             studentId: state.selectedStudent.id,
             rsvpStatus: state.attendance,
             foodPreference: state.attendance === 'confirmed' ? state.foodPreference : '',
-            phone: phoneVal
+            phone: phoneVal,
+            likesReading: state.attendance === 'confirmed' ? state.likesReading : ''
           }
         })
       })

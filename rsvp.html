@@ -1,172 +1,510 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Rukhsat — RSVP Desk</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@400..700&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Inter:wght@300;400;500;600&family=Playfair+Display:ital,wght@0,400..900;1,400..900&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="styles.css">
-  <script src="security.js"></script>
-</head>
-<body>
-  <div class="film-grain"></div>
-  <div class="vignette"></div>
+    <head>
+        <meta charset="UTF-8" />
+        <meta
+            name="viewport"
+            content="width=device-width, initial-scale=1.0"
+        />
+        <title>Rukhsat — RSVP Desk</title>
+        <link
+            rel="preconnect"
+            href="https://fonts.googleapis.com"
+        />
+        <link
+            rel="preconnect"
+            href="https://fonts.gstatic.com"
+            crossorigin
+        />
+        <link
+            href="https://fonts.googleapis.com/css2?family=Caveat:wght@400..700&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Inter:wght@300;400;500;600&family=Playfair+Display:ital,wght@0,400..900;1,400..900&display=swap"
+            rel="stylesheet"
+        />
+        <link rel="stylesheet" href="styles.css" />
+        <script src="security.js"></script>
+    </head>
+    <body>
+        <div class="film-grain"></div>
+        <div class="vignette"></div>
 
-  <header class="navbar">
-    <div class="logo">IT Farewell'26</div>
-    <nav class="nav-links">
-      <a href="index.html">Home</a>
-      <!-- <a href="photo-vault.html">Photo Vault</a> -->
-      <!-- <a href="video-vault.html">Video Vault</a> -->
-    </nav>
-    <div class="header-actions">
-      <button class="hamburger-btn" id="menu-toggle" aria-label="Toggle Menu">
-        <span></span>
-        <span></span>
-        <span></span>
-      </button>
-    </div>
-  </header>
-
-  <!-- Mobile Drawer Overlay -->
-  <div class="nav-drawer" id="nav-drawer">
-    <div class="drawer-header">
-      <div class="logo">IT Farewell'26</div>
-      <button class="drawer-close-btn" id="menu-close" aria-label="Close Menu">&times;</button>
-    </div>
-    <nav class="drawer-links">
-      <a href="index.html">Home</a>
-      <!-- <a href="photo-vault.html">Photo Vault</a> -->
-      <!-- <a href="video-vault.html">Video Vault</a> -->
-      <a href="rsvp.html" class="active">RSVP Desk</a>
-    </nav>
-  </div>
-
-  <section class="rsvp-section" style="padding-top: 130px; min-height: 90vh;">
-    <div class="section-header">
-      <h2 class="section-title">The RSVP Desk</h2>
-      <p class="section-desc">Claim your reservation for the farewell night. Please search and select your name to verify.</p>
-    </div>
-
-    <div class="rsvp-container">
-      <div class="scrapbook-page rsvp-card">
-        <div class="tape-sticker sticker-top-left"></div>
-        <div class="tape-sticker sticker-top-right"></div>
-        
-        <form id="rsvp-form" class="rsvp-flow-form">
-          <!-- Step 1: Student Lookup -->
-          <div class="rsvp-step" id="step-lookup">
-            <h3 class="step-title"><span class="step-num">01.</span> Find Your Name</h3>
-            <p class="step-instruction">Begin typing your name as listed in the class database.</p>
-            <div class="search-wrapper lookup-wrapper">
-              <input type="text" id="student-search-input" placeholder="Enter your name..." autocomplete="off">
-              <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
-              <div id="autocomplete-dropdown" class="autocomplete-dropdown hidden"></div>
+        <header class="navbar">
+            <div class="logo">IT Farewell'26</div>
+            <nav class="nav-links">
+                <a href="index.html">Home</a>
+                <!-- <a href="photo-vault.html">Photo Vault</a> -->
+                <!-- <a href="video-vault.html">Video Vault</a> -->
+            </nav>
+            <div class="header-actions">
+                <button
+                    class="hamburger-btn"
+                    id="menu-toggle"
+                    aria-label="Toggle Menu"
+                >
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </button>
             </div>
-            <div id="selected-student-pill" class="selected-student-pill hidden">
-              <span class="student-pill-name">Selected: Reetam Shyamal</span>
-              <button type="button" id="clear-student-btn" class="clear-pill-btn">&times;</button>
-            </div>
-            
-            <!-- Privacy RSVP Done Card -->
-            <div id="rsvp-privacy-card" class="rsvp-privacy-card hidden">
-              <div class="privacy-card-inner">
-                <span class="privacy-card-icon">🌸</span>
-                <h4 class="privacy-card-title scribble">"RSVP Completed!"</h4>
-                <p class="privacy-card-text">Your RSVP has already been completed and verified. See you soon!</p>
-              </div>
-            </div>
-          </div>
+        </header>
 
-          <!-- Step 2: Attendance Details -->
-          <div class="rsvp-step locked" id="step-details">
-            <h3 class="step-title"><span class="step-num">02.</span> Will you join us?</h3>
-            <p class="step-instruction">Confirm your attendance and select your meal preference.</p>
-            
-            <div class="rsvp-choices-grid">
-              <div class="choice-card attendance-card" data-val="confirmed">
-                <div class="choice-box"></div>
-                <div class="choice-content">
-                  <h4 class="choice-title">Yes, Count Me In!</h4>
-                  <p class="choice-subtitle">I'll be there to celebrate and walk down memory lane.</p>
-                </div>
-              </div>
+        <!-- Mobile Drawer Overlay -->
+        <div class="nav-drawer" id="nav-drawer">
+            <div class="drawer-header">
+                <div class="logo">IT Farewell'26</div>
+                <button
+                    class="drawer-close-btn"
+                    id="menu-close"
+                    aria-label="Close Menu"
+                >
+                    &times;
+                </button>
             </div>
-
-            <div id="food-preference-section" class="food-preference-section hidden">
-              <h4 class="food-section-title">Select Food Preference</h4>
-              <div class="rsvp-choices-grid small-choices">
-                <div class="choice-card food-card active" data-val="veg">
-                  <div class="choice-box"></div>
-                  <div class="choice-content">
-                    <h5 class="choice-title">Vegetarian</h5>
-                  </div>
-                </div>
-                <div class="choice-card food-card" data-val="non-veg">
-                  <div class="choice-box"></div>
-                  <div class="choice-content">
-                    <h5 class="choice-title">Non-Vegetarian</h5>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <div id="phone-number-section" class="phone-number-section hidden" style="margin-top: 1.5rem;">
-              <h4 class="food-section-title">WhatsApp Number</h4>
-              <p class="step-instruction" style="font-size: 0.9rem; margin-bottom: 0.8rem;">Required for your unique QR entry pass.</p>
-              <div class="search-wrapper" style="max-width: 100%;">
-                <input type="tel" id="student-phone-input" placeholder="Enter 10-digit number..." pattern="[0-9]{10}" maxlength="10" style="padding-left: 1.5rem; width: 100%; border: 2px solid var(--text-charcoal); border-radius: 4px; padding: 0.8rem 1.5rem; background: var(--bg-linen); outline: none;" required>
-              </div>
-            </div>
-          </div>
-
-          <!-- Step 3: Magic Verification link -->
-          <div class="rsvp-step locked" id="step-verify">
-            <h3 class="step-title"><span class="step-num">03.</span> Verification</h3>
-            <p class="step-instruction" id="verification-text">We will send a one-click magic link to your registered email address.</p>
-            
-            <div class="verify-email-display" id="email-display-container">
-              <span class="email-label">Registered Email:</span>
-              <span class="email-value" id="student-email-masked">ree***@gmail.com</span>
-            </div>
-            
-            <button type="submit" class="submit-pin-btn rsvp-submit-btn" id="rsvp-submit-btn" disabled>
-              Send Magic Verification Link
-            </button>
-          </div>
-        </form>
-
-        <!-- Loading & Success states -->
-        <div id="rsvp-status-overlay" class="rsvp-overlay hidden">
-          <div class="status-box">
-            <div class="loader-spinner"></div>
-            <h4 class="status-title">Sending Verification Link...</h4>
-            <p class="status-desc">Connecting to the database and sending mail via SMTP.</p>
-          </div>
+            <nav class="drawer-links">
+                <a href="index.html">Home</a>
+                <!-- <a href="photo-vault.html">Photo Vault</a> -->
+                <!-- <a href="video-vault.html">Video Vault</a> -->
+                <a href="rsvp.html" class="active"
+                    >RSVP Desk</a
+                >
+            </nav>
         </div>
 
-        <div id="rsvp-success-overlay" class="rsvp-overlay hidden">
-          <div class="status-box success-box">
-            <div class="success-seal">!</div>
-            <h4 class="status-title scribble">"Verification Pending!"</h4>
-            <p class="status-desc">We have sent a one-click magic verification link to your registered email address.</p>
-            <p class="status-subdesc">Please open your inbox or spam, click the verification link, and your invitation card along with your entry QR code will be emailed to you immediately.</p>
-            <a href="index.html" class="filter-btn active" style="margin-top: 25px; display: inline-block;">Return Home</a>
-          </div>
-        </div>
+        <section
+            class="rsvp-section"
+            style="padding-top: 130px; min-height: 90vh"
+        >
+            <div class="section-header">
+                <h2 class="section-title">The RSVP Desk</h2>
+                <p class="section-desc">
+                    Claim your reservation for the farewell
+                    night. Please search and select your
+                    name to verify.
+                </p>
+            </div>
 
-      </div>
-    </div>
-  </section>
+            <div class="rsvp-container">
+                <div class="scrapbook-page rsvp-card">
+                    <div
+                        class="tape-sticker sticker-top-left"
+                    ></div>
+                    <div
+                        class="tape-sticker sticker-top-right"
+                    ></div>
 
-  <footer class="footer">
-    <p class="footer-text">Rukhsat © Class of 2026. Made with ❤️, tea, and lots of memories.</p>
-    <p class="footer-subtext">Designed to live forever on the web.</p>
-  </footer>
+                    <form
+                        id="rsvp-form"
+                        class="rsvp-flow-form"
+                    >
+                        <!-- Step 1: Student Lookup -->
+                        <div
+                            class="rsvp-step"
+                            id="step-lookup"
+                        >
+                            <h3 class="step-title">
+                                <span class="step-num"
+                                    >01.</span
+                                >
+                                Find Your Name
+                            </h3>
+                            <p class="step-instruction">
+                                Begin typing your name as
+                                listed in the class
+                                database.
+                            </p>
+                            <div
+                                class="search-wrapper lookup-wrapper"
+                            >
+                                <input
+                                    type="text"
+                                    id="student-search-input"
+                                    placeholder="Enter your name..."
+                                    autocomplete="off"
+                                />
+                                <svg
+                                    class="search-icon"
+                                    viewBox="0 0 24 24"
+                                    fill="none"
+                                    stroke="currentColor"
+                                    stroke-width="2"
+                                >
+                                    <circle
+                                        cx="11"
+                                        cy="11"
+                                        r="8"
+                                    ></circle>
+                                    <line
+                                        x1="21"
+                                        y1="21"
+                                        x2="16.65"
+                                        y2="16.65"
+                                    ></line>
+                                </svg>
+                                <div
+                                    id="autocomplete-dropdown"
+                                    class="autocomplete-dropdown hidden"
+                                ></div>
+                            </div>
+                            <div
+                                id="selected-student-pill"
+                                class="selected-student-pill hidden"
+                            >
+                                <span
+                                    class="student-pill-name"
+                                    >Selected: Reetam
+                                    Shyamal</span
+                                >
+                                <button
+                                    type="button"
+                                    id="clear-student-btn"
+                                    class="clear-pill-btn"
+                                >
+                                    &times;
+                                </button>
+                            </div>
 
-  <script src="app.js"></script>
-  <script src="rsvp.js"></script>
-</body>
+                            <!-- Privacy RSVP Done Card -->
+                            <div
+                                id="rsvp-privacy-card"
+                                class="rsvp-privacy-card hidden"
+                            >
+                                <div
+                                    class="privacy-card-inner"
+                                >
+                                    <span
+                                        class="privacy-card-icon"
+                                        >🌸</span
+                                    >
+                                    <h4
+                                        class="privacy-card-title scribble"
+                                    >
+                                        "RSVP Completed!"
+                                    </h4>
+                                    <p
+                                        class="privacy-card-text"
+                                    >
+                                        Your RSVP has
+                                        already been
+                                        completed and
+                                        verified. See you
+                                        soon!
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Step 2: Attendance Details -->
+                        <div
+                            class="rsvp-step locked"
+                            id="step-details"
+                        >
+                            <h3 class="step-title">
+                                <span class="step-num"
+                                    >02.</span
+                                >
+                                Will you join us?
+                            </h3>
+                            <p class="step-instruction">
+                                Confirm your attendance and
+                                select your meal preference.
+                            </p>
+
+                            <div class="rsvp-choices-grid">
+                                <div
+                                    class="choice-card attendance-card"
+                                    data-val="confirmed"
+                                >
+                                    <div
+                                        class="choice-box"
+                                    ></div>
+                                    <div
+                                        class="choice-content"
+                                    >
+                                        <h4
+                                            class="choice-title"
+                                        >
+                                            Yes, Count Me
+                                            In!
+                                        </h4>
+                                        <p
+                                            class="choice-subtitle"
+                                        >
+                                            I'll be there to
+                                            celebrate and
+                                            walk down memory
+                                            lane.
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div
+                                id="food-preference-section"
+                                class="food-preference-section hidden"
+                            >
+                                <h4
+                                    class="food-section-title"
+                                >
+                                    Select Food Preference
+                                </h4>
+                                <div
+                                    class="rsvp-choices-grid small-choices"
+                                >
+                                    <div
+                                        class="choice-card food-card active"
+                                        data-val="veg"
+                                    >
+                                        <div
+                                            class="choice-box"
+                                        ></div>
+                                        <div
+                                            class="choice-content"
+                                        >
+                                            <h5
+                                                class="choice-title"
+                                            >
+                                                Vegetarian
+                                            </h5>
+                                        </div>
+                                    </div>
+                                    <div
+                                        class="choice-card food-card"
+                                        data-val="non-veg"
+                                    >
+                                        <div
+                                            class="choice-box"
+                                        ></div>
+                                        <div
+                                            class="choice-content"
+                                        >
+                                            <h5
+                                                class="choice-title"
+                                            >
+                                                Non-Vegetarian
+                                            </h5>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div
+                                id="phone-number-section"
+                                class="phone-number-section hidden"
+                                style="margin-top: 1.5rem"
+                            >
+                                <h4
+                                    class="food-section-title"
+                                >
+                                    Contact Number
+                                </h4>
+                                <br />
+                                <div
+                                    class="search-wrapper"
+                                    style="max-width: 100%"
+                                >
+                                    <input
+                                        type="tel"
+                                        id="student-phone-input"
+                                        placeholder="Enter 10-digit number..."
+                                        pattern="[0-9]{10}"
+                                        maxlength="10"
+                                        style="
+                                            padding-left: 1.5rem;
+                                            width: 100%;
+                                            border: 2px
+                                                solid
+                                                var(
+                                                    --text-charcoal
+                                                );
+                                            border-radius: 4px;
+                                            padding: 0.8rem
+                                                1.5rem;
+                                            background: var(
+                                                --bg-linen
+                                            );
+                                            outline: none;
+                                        "
+                                        required
+                                    />
+                                </div>
+                            </div>
+
+                            <div
+                                id="reading-preference-section"
+                                class="food-selection-section hidden"
+                                style="margin-top: 1.5rem"
+                            >
+                                <h4
+                                    class="food-section-title"
+                                >
+                                    Do you like to read?
+                                </h4>
+                                <p
+                                    class="step-instruction"
+                                    style="
+                                        font-size: 0.9rem;
+                                        margin-bottom: 0.8rem;
+                                    "
+                                >
+                                    Are you an avid reader?
+                                </p>
+                                <div
+                                    class="rsvp-choices-grid small-choices"
+                                >
+                                    <div
+                                        class="choice-card reading-card active"
+                                        data-val="yes"
+                                    >
+                                        <div
+                                            class="choice-box"
+                                        ></div>
+                                        <div
+                                            class="choice-content"
+                                        >
+                                            <h5
+                                                class="choice-title"
+                                            >
+                                                Yes
+                                            </h5>
+                                        </div>
+                                    </div>
+                                    <div
+                                        class="choice-card reading-card"
+                                        data-val="no"
+                                    >
+                                        <div
+                                            class="choice-box"
+                                        ></div>
+                                        <div
+                                            class="choice-content"
+                                        >
+                                            <h5
+                                                class="choice-title"
+                                            >
+                                                No
+                                            </h5>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Step 3: Magic Verification link -->
+                        <div
+                            class="rsvp-step locked"
+                            id="step-verify"
+                        >
+                            <h3 class="step-title">
+                                <span class="step-num"
+                                    >03.</span
+                                >
+                                Verification
+                            </h3>
+                            <p
+                                class="step-instruction"
+                                id="verification-text"
+                            >
+                                We will send a one-click
+                                magic link to your
+                                registered email address.
+                            </p>
+
+                            <div
+                                class="verify-email-display"
+                                id="email-display-container"
+                            >
+                                <span class="email-label"
+                                    >Registered Email:</span
+                                >
+                                <span
+                                    class="email-value"
+                                    id="student-email-masked"
+                                    >ree***@gmail.com</span
+                                >
+                            </div>
+
+                            <button
+                                type="submit"
+                                class="submit-pin-btn rsvp-submit-btn"
+                                id="rsvp-submit-btn"
+                                disabled
+                            >
+                                Send Magic Verification Link
+                            </button>
+                        </div>
+                    </form>
+
+                    <!-- Loading & Success states -->
+                    <div
+                        id="rsvp-status-overlay"
+                        class="rsvp-overlay hidden"
+                    >
+                        <div class="status-box">
+                            <div
+                                class="loader-spinner"
+                            ></div>
+                            <h4 class="status-title">
+                                Sending Verification Link...
+                            </h4>
+                            <p class="status-desc">
+                                Connecting to the database
+                                and sending mail via SMTP.
+                            </p>
+                        </div>
+                    </div>
+
+                    <div
+                        id="rsvp-success-overlay"
+                        class="rsvp-overlay hidden"
+                    >
+                        <div class="status-box success-box">
+                            <div class="success-seal">
+                                !
+                            </div>
+                            <h4
+                                class="status-title scribble"
+                            >
+                                "Verification Pending!"
+                            </h4>
+                            <p class="status-desc">
+                                We have sent a one-click
+                                magic verification link to
+                                your registered email
+                                address.
+                            </p>
+                            <p class="status-subdesc">
+                                Please open your inbox or
+                                spam, click the verification
+                                link, and your invitation
+                                card along with your entry
+                                QR code will be emailed to
+                                you immediately.
+                            </p>
+                            <a
+                                href="index.html"
+                                class="filter-btn active"
+                                style="
+                                    margin-top: 25px;
+                                    display: inline-block;
+                                "
+                                >Return Home</a
+                            >
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <footer class="footer">
+            <p class="footer-text">
+                Rukhsat © Class of 2026. Made with ❤️, tea,
+                and lots of memories.
+            </p>
+            <p class="footer-subtext">
+                Designed to live forever on the web.
+            </p>
+        </footer>
+
+        <script src="app.js"></script>
+        <script src="rsvp.js"></script>
+    </body>
 </html>

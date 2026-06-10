@@ -140,6 +140,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 					"name":           name,
 					"rsvpStatus":     "pending",
 					"foodPreference": "",
+					"likesReading":   "",
 					"verified":       false,
 				},
 			}
@@ -192,7 +193,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 			f := excelize.NewFile()
 			sheetName := "Sheet1"
 			// Write Headers
-			headers := []interface{}{"Timestamp", "Email address", "Name", "Dept", "Whatsapp Number", "Year", "Food Preference", "Unique_id"}
+			headers := []interface{}{"Timestamp", "Email address", "Name", "Dept", "Contact Number", "Year", "Food Preference", "Likes Reading", "Unique_id"}
 			f.SetSheetRow(sheetName, "A1", &headers)
 
 			rowIdx := 2
@@ -206,6 +207,11 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 					foodPrefStr = "Non-Vegetarian"
 				}
 
+				likesReadingStr := "No"
+				if s.LikesReading == "yes" {
+					likesReadingStr = "Yes"
+				}
+
 				uniqueId := s.UniqueCode
 
 				row := []interface{}{
@@ -216,6 +222,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 					s.Phone,
 					"4th",
 					foodPrefStr,
+					likesReadingStr,
 					uniqueId,
 				}
 				cell := fmt.Sprintf("A%d", rowIdx)

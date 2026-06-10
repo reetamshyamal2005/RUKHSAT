@@ -73,6 +73,9 @@ func init() {
 				"foodPreference": &graphql.Field{
 					Type: graphql.NewNonNull(graphql.String),
 				},
+				"likesReading": &graphql.Field{
+					Type: graphql.NewNonNull(graphql.String),
+				},
 				"verified": &graphql.Field{
 					Type: graphql.NewNonNull(graphql.Boolean),
 				},
@@ -270,6 +273,9 @@ func init() {
 						"phone": &graphql.ArgumentConfig{
 							Type: graphql.String,
 						},
+						"likesReading": &graphql.ArgumentConfig{
+							Type: graphql.String,
+						},
 					},
 					Resolve: func(p graphql.ResolveParams) (interface{}, error) {
 						studentIdStr := p.Args["studentId"].(string)
@@ -281,6 +287,10 @@ func init() {
 						phone := ""
 						if ph, ok := p.Args["phone"].(string); ok {
 							phone = ph
+						}
+						likesReading := ""
+						if lr, ok := p.Args["likesReading"].(string); ok {
+							likesReading = lr
 						}
 
 						if rsvpStatus != "confirmed" && rsvpStatus != "declined" {
@@ -324,6 +334,7 @@ func init() {
 								"verificationToken":    token,
 								"pendingRsvpStatus":    rsvpStatus,
 								"pendingFoodPref":      foodPreference,
+								"pendingLikesReading":  likesReading,
 								"pendingPhone":         phone,
 								"lastVerificationSent": time.Now(),
 							},
