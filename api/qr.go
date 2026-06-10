@@ -1,18 +1,21 @@
 package handler
 
 import (
+	"bytes"
+	_ "embed"
 	"fmt"
 	"image"
 	"image/color"
 	stdDraw "image/draw"
 	"image/png"
 	"net/http"
-	"os"
-	"path/filepath"
 
 	"github.com/skip2/go-qrcode"
 	"golang.org/x/image/draw"
 )
+
+//go:embed qr-logo.png
+var logoData []byte
 
 // QrHandler handles GET /api/qr?data=...
 // It generates a QR code with a logo in the center.
@@ -33,39 +36,13 @@ func QrHandler(w http.ResponseWriter, r *http.Request) {
 
 	qrImg := q.Image(300)
 
-	// 2. Try to load and resize the logo
-	// We'll check multiple paths to be safe on Vercel
-	var logoFile *os.File
-	var openErr error
-	
-	wd, _ := os.Getwd()
-	possiblePaths := []string{
-		"qr-logo.png",                             // Same dir as handler
-		filepath.Join(wd, "api", "qr-logo.png"),   // Absolute from root
-		filepath.Join(wd, "qr-logo.png"),         // Absolute from current
-		"api/qr-logo.png",                        // Relative from root
-	}
-
-	var foundPath string
-	for _, path := range possiblePaths {
-		logoFile, openErr = os.Open(path)
-		if openErr == nil {
-			foundPath = path
-			break
-		}
-	}
-
+	// 2. Decode the embedded logo
 	var finalImg image.Image = qrImg
 
-	if openErr != nil {
-		fmt.Printf("Troubleshooting QR Logo: Failed to open logo after trying %v. Error: %v\n", possiblePaths, openErr)
-	} else {
-		defer logoFile.Close()
-		fmt.Printf("Troubleshooting QR Logo: Successfully opened logo from %s\n", foundPath)
-		
-		logoImg, decodeErr := png.Decode(logoFile)
+	if len(logoData) > 0 {
+		logoImg, decodeErr := png.Decode(bytes.NewReader(logoData))
 		if decodeErr != nil {
-			fmt.Printf("Troubleshooting QR Logo: Failed to decode logo PNG: %v\n", decodeErr)
+			fmt.Printf("Troubleshooting QR Logo: Failed to decode embedded logo PNG: %v\n", decodeErr)
 		} else {
 			// Resize logo to 70x70 for consistent look
 			resizedLogo := image.NewRGBA(image.Rect(0, 0, 70, 70))
@@ -74,10 +51,13 @@ func QrHandler(w http.ResponseWriter, r *http.Request) {
 			// 3. Overlay logo onto QR code
 			finalImg = overlayCircularLogo(qrImg, resizedLogo)
 		}
+	} else {
+		fmt.Println("Troubleshooting QR Logo: Embedded logoData is empty")
 	}
 
 	// 4. Serve the final image
 	w.Header().Set("Content-Type", "image/png")
+	// Cache for a long time since QR for a unique ID won't change
 	w.Header().Set("Cache-Control", "public, max-age=31536000, immutable")
 	png.Encode(w, finalImg)
 }
