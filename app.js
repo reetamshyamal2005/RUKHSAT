@@ -9,43 +9,59 @@ document.addEventListener('DOMContentLoaded', () => {
   const quickMusicText = quickMusicBtn?.querySelector('.music-status-text');
 
   let isPlaying = false;
+  let hasUnlockedAudio = false;
 
   function updateMusicUI(playing) {
     isPlaying = playing;
+    const cornerGifs = document.querySelectorAll('.corner-gif');
     if (playing) {
       if (quickMusicIcon) quickMusicIcon.classList.add('playing');
       if (quickMusicText) quickMusicText.textContent = 'Pause Soundtrack';
+      cornerGifs.forEach(gif => gif.classList.remove('hidden'));
     } else {
       if (quickMusicIcon) quickMusicIcon.classList.remove('playing');
       if (quickMusicText) quickMusicText.textContent = 'Play Soundtrack';
+      cornerGifs.forEach(gif => gif.classList.add('hidden'));
     }
   }
 
-  if (audio) {
-    // Sync UI with audio state
-    audio.addEventListener('play', () => updateMusicUI(true));
-    audio.addEventListener('pause', () => updateMusicUI(false));
+  function tryStartAudio() {
+    if (!audio || hasUnlockedAudio || !audio.paused) {
+      return;
+    }
 
-    // Handle initial autoplay attempt
-    const playPromise = audio.play();
-    if (playPromise !== undefined) {
-      playPromise.then(() => {
-        updateMusicUI(true);
-      }).catch(error => {
-        // Auto-play was prevented
+    audio.play()
+      .then(() => {
+        hasUnlockedAudio = true;
+      })
+      .catch(err => {
+        console.warn("Playback prevented", err);
         updateMusicUI(false);
       });
-    }
+  }
+
+  if (audio) {
+    // Sync UI with audio events
+    audio.addEventListener('play', () => {
+      hasUnlockedAudio = true;
+      updateMusicUI(true);
+    });
+    audio.addEventListener('pause', () => updateMusicUI(false));
+
+    // Reflect the real browser playback state on first paint.
+    updateMusicUI(!audio.paused && !audio.ended);
+
+    ['pointerdown', 'keydown', 'touchstart'].forEach(eventName => {
+      document.addEventListener(eventName, tryStartAudio, { passive: true, once: true });
+    });
   }
 
   function toggleMusic() {
     if (!audio) return;
-    if (isPlaying) {
-      audio.pause();
+    if (audio.paused) {
+      tryStartAudio();
     } else {
-      audio.play().catch(err => {
-        console.warn("Playback prevented", err);
-      });
+      audio.pause();
     }
   }
 

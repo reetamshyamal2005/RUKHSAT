@@ -1,113 +1,255 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="RUKHSAT - College farewell scrapbook.">
-  <title>Rukhsat — The Farewell '26 (Home)</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@400..700&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Inter:wght@300;400;500;600&family=Playfair+Display:ital,wght@0,400..900;1,400..900&family=Rubik+Wet+Paint&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="styles.css">
-  <script src="security.js"></script>
-</head>
-<body>
-  <div class="film-grain"></div>
-  <div class="vignette"></div>
+    <head>
+        <meta charset="UTF-8" />
+        <meta
+            name="viewport"
+            content="width=device-width, initial-scale=1.0"
+        />
+        <meta
+            name="description"
+            content="RUKHSAT - College farewell scrapbook."
+        />
+        <title>Rukhsat — The Farewell '26 (Home)</title>
+        <link
+            rel="preconnect"
+            href="https://fonts.googleapis.com"
+        />
+        <link
+            rel="preconnect"
+            href="https://fonts.gstatic.com"
+            crossorigin
+        />
+        <link
+            href="https://fonts.googleapis.com/css2?family=Caveat:wght@400..700&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Inter:wght@300;400;500;600&family=Playfair+Display:ital,wght@0,400..900;1,400..900&family=Rubik+Wet+Paint&display=swap"
+            rel="stylesheet"
+        />
+        <link rel="stylesheet" href="styles.css" />
+        <script src="security.js"></script>
+    </head>
+    <body>
+        <div class="film-grain"></div>
+        <div class="vignette"></div>
 
-  <audio id="bg-audio" loop autoplay data-track-title="Woh Din">
-    <source src="audio/woh_din.mp3" type="audio/mpeg">
-  </audio>
+        <audio
+            id="bg-audio"
+            loop
+            autoplay
+            data-track-title="Mehmaan"
+        >
+            <source
+                src="audio/rajasthani.mp3"
+                type="audio/mpeg"
+            />
+        </audio>
 
-  <header class="navbar">
-    <div class="logo">IT Farewell'26</div>
-    <nav class="nav-links">
-      <a href="index.html" class="active">Home</a>
-      <!-- <a href="photo-vault.html">Photo Vault</a> -->
-      <!-- <a href="video-vault.html">Video Vault</a> -->
-    </nav>
-    <div class="header-actions">
-      <button class="music-toggle-btn" id="music-quick-btn" title="Toggle Background Music">
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="music-icon paused">
-          <path d="M9 18V5l12-2v13"></path>
-          <circle cx="6" cy="18" r="3"></circle>
-          <circle cx="18" cy="16" r="3"></circle>
-        </svg>
-        <span class="music-status-text">Play Soundtrack</span>
-      </button>
-      <button class="hamburger-btn" id="menu-toggle" aria-label="Toggle Menu">
-        <span></span>
-        <span></span>
-        <span></span>
-      </button>
-    </div>
-  </header>
+        <header class="navbar">
+            <div class="logo">IT Farewell'26</div>
+            <nav class="nav-links">
+                <a href="index.html" class="active">Home</a>
+                <!-- <a href="photo-vault.html">Photo Vault</a> -->
+                <!-- <a href="video-vault.html">Video Vault</a> -->
+            </nav>
+            <div class="header-actions">
+                <button
+                    class="music-toggle-btn"
+                    id="music-quick-btn"
+                    title="Toggle Background Music"
+                >
+                    <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        class="music-icon paused"
+                    >
+                        <path d="M9 18V5l12-2v13"></path>
+                        <circle
+                            cx="6"
+                            cy="18"
+                            r="3"
+                        ></circle>
+                        <circle
+                            cx="18"
+                            cy="16"
+                            r="3"
+                        ></circle>
+                    </svg>
+                    <span class="music-status-text"
+                        >Play Soundtrack</span
+                    >
+                </button>
+                <button
+                    class="hamburger-btn"
+                    id="menu-toggle"
+                    aria-label="Toggle Menu"
+                >
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </button>
+            </div>
+        </header>
 
-  <!-- Mobile Drawer Overlay -->
-  <div class="nav-drawer" id="nav-drawer">
-    <div class="drawer-header">
-      <div class="logo">IT Farewell'26</div>
-      <button class="drawer-close-btn" id="menu-close" aria-label="Close Menu">&times;</button>
-    </div>
-    <nav class="drawer-links">
-      <a href="index.html" class="active">Home</a>
-      <!-- <a href="photo-vault.html">Photo Vault</a> -->
-      <!-- <a href="video-vault.html">Video Vault</a> -->
-      <a href="rsvp.html">RSVP Desk</a>
-    </nav>
-  </div>
-
-  <section class="hero-section" id="hero">
-    <div class="scrapbook-page hero-card">
-      <div class="tape-sticker sticker-top-left"></div>
-      <div class="tape-sticker sticker-top-right"></div>
-      <div class="hero-intro">
-        <span class="retro-badge">A Digital Scrapbook</span>
-        <h1 class="hero-title">RUKHSAT</h1>
-        <p class="hero-subtitle">
-          "हम रहें या ना रहें कल, याद आएँगे ये पल..."<br>
-          <span class="subtitle-en" id="hero-typing-text" aria-live="polite"></span>
-          <span class="typing-cursor" aria-hidden="true">|</span>
-        </p>
-      </div>
-
-      <div class="polaroid-stack-container">
-        <div class="showcase-polaroid polaroid-1">
-          <div class="polaroid-img-placeholder custom-photo"><img src="images/semester1.jpg" alt="Semester 1 Memory"></div>
-          <p class="polaroid-caption">Where it all began.</p>
+        <!-- Mobile Drawer Overlay -->
+        <div class="nav-drawer" id="nav-drawer">
+            <div class="drawer-header">
+                <div class="logo">IT Farewell'26</div>
+                <button
+                    class="drawer-close-btn"
+                    id="menu-close"
+                    aria-label="Close Menu"
+                >
+                    &times;
+                </button>
+            </div>
+            <nav class="drawer-links">
+                <a href="index.html" class="active">Home</a>
+                <!-- <a href="photo-vault.html">Photo Vault</a> -->
+                <!-- <a href="video-vault.html">Video Vault</a> -->
+                <a href="rsvp.html">RSVP Desk</a>
+            </nav>
         </div>
-        <div class="showcase-polaroid polaroid-2">
-          <div class="polaroid-img-placeholder custom-photo"><img src="images/Group.jpg" alt="Group Photo"></div>
-          <p class="polaroid-caption">Tea Stall Debates.</p>
+
+        <section class="hero-section" id="hero">
+            <div class="scrapbook-page hero-card">
+                <div
+                    class="tape-sticker sticker-top-left"
+                ></div>
+                <div
+                    class="tape-sticker sticker-top-right"
+                ></div>
+                <div class="hero-intro">
+                    <span class="retro-badge"
+                        >A Digital Scrapbook</span
+                    >
+                    <h1 class="hero-title">RUKHSAT</h1>
+                    <p class="hero-subtitle">
+                        "हम रहें या ना रहें कल, याद आएँगे ये
+                        पल..."<br />
+                        <span
+                            class="subtitle-en"
+                            id="hero-typing-text"
+                            aria-live="polite"
+                        ></span>
+                        <span
+                            class="typing-cursor"
+                            aria-hidden="true"
+                            >|</span
+                        >
+                    </p>
+                </div>
+
+                <div class="polaroid-stack-container">
+                    <div
+                        class="showcase-polaroid polaroid-1"
+                    >
+                        <div
+                            class="polaroid-img-placeholder custom-photo"
+                        >
+                            <img
+                                src="images/semester1.jpg"
+                                alt="Semester 1 Memory"
+                            />
+                        </div>
+                        <p class="polaroid-caption">
+                            Where it all began.
+                        </p>
+                    </div>
+                    <div
+                        class="showcase-polaroid polaroid-2"
+                    >
+                        <div
+                            class="polaroid-img-placeholder custom-photo"
+                        >
+                            <img
+                                src="images/Group.jpg"
+                                alt="Group Photo"
+                            />
+                        </div>
+                        <p class="polaroid-caption">
+                            Tea Stall Debates.
+                        </p>
+                    </div>
+                    <div
+                        class="showcase-polaroid polaroid-3"
+                    >
+                        <div
+                            class="polaroid-img-placeholder custom-photo"
+                        >
+                            <img
+                                src="images/farewell'26.png"
+                                alt="Farewell'26"
+                                class="only-this"
+                            />
+                        </div>
+                        <p class="polaroid-caption">
+                            Never goodbye.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="stats-row">
+                    <div class="stat-item">
+                        <span class="stat-number">4</span
+                        ><span class="stat-label"
+                            >Years of Joy</span
+                        >
+                    </div>
+                    <div class="stat-divider"></div>
+                    <div class="stat-item">
+                        <span class="stat-number">8</span
+                        ><span class="stat-label"
+                            >Semesters Passed</span
+                        >
+                    </div>
+                    <div class="stat-divider"></div>
+                    <div class="stat-item">
+                        <span class="stat-number">48+</span
+                        ><span class="stat-label"
+                            >Subjects Survived</span
+                        >
+                    </div>
+                    <div class="stat-divider"></div>
+                    <div class="stat-item">
+                        <span class="stat-number">∞</span
+                        ><span class="stat-label"
+                            >Golden Memories</span
+                        >
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <footer class="footer">
+            <p class="footer-text">
+                Rukhsat © Class of 2026. Made with ❤️, tea,
+                and lots of memories.
+            </p>
+            <p class="footer-subtext">
+                Designed to live forever on the web.
+            </p>
+        </footer>
+
+        <a
+            href="rsvp.html"
+            class="floating-rsvp-btn"
+            id="rsvp-float"
+        >
+            <span class="rsvp-btn-text"
+                >Get your reservation<br />done soon.</span
+            >
+            <div class="rsvp-btn-seal">RSVP</div>
+        </a>
+
+        <div class="corner-gif corner-gif-left hidden">
+            <img src="images/corner-left.gif" alt="" />
         </div>
-        <div class="showcase-polaroid polaroid-3">
-          <div class="polaroid-img-placeholder custom-photo"><img src="images/farewell'26.png" alt="Farewell'26" class="only-this"></div>
-          <p class="polaroid-caption">Never goodbye.</p>
+        <div class="corner-gif corner-gif-right hidden">
+            <img src="images/corner-right.gif" alt="" />
         </div>
-      </div>
 
-      <div class="stats-row">
-        <div class="stat-item"><span class="stat-number">4</span><span class="stat-label">Years of Joy</span></div>
-        <div class="stat-divider"></div>
-        <div class="stat-item"><span class="stat-number">8</span><span class="stat-label">Semesters Passed</span></div>
-        <div class="stat-divider"></div>
-        <div class="stat-item"><span class="stat-number">48+</span><span class="stat-label">Subjects Survived</span></div>
-        <div class="stat-divider"></div>
-        <div class="stat-item"><span class="stat-number">∞</span><span class="stat-label">Golden Memories</span></div>
-      </div>
-    </div>
-  </section>
-
-  <footer class="footer">
-    <p class="footer-text">Rukhsat © Class of 2026. Made with ❤️, tea, and lots of memories.</p>
-    <p class="footer-subtext">Designed to live forever on the web.</p>
-  </footer>
-
-  <a href="rsvp.html" class="floating-rsvp-btn" id="rsvp-float">
-    <span class="rsvp-btn-text">Get your reservation<br>done soon.</span>
-    <div class="rsvp-btn-seal">RSVP</div>
-  </a>
-
-  <script src="app.js"></script>
-</body>
+        <script src="app.js"></script>
+    </body>
 </html>
