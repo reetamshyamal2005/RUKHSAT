@@ -1,6 +1,7 @@
 package handler
 
 import (
+	"fmt"
 	"image"
 	"image/color"
 	stdDraw "image/draw"
