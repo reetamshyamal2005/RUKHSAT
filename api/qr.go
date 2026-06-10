@@ -33,21 +33,39 @@ func QrHandler(w http.ResponseWriter, r *http.Request) {
 	qrImg := q.Image(300)
 
 	// 2. Try to load and resize the logo
-	logoPath := "qr-logo.png" 
-	logoFile, err := os.Open(logoPath)
+	// We'll check multiple paths to be safe on Vercel
+	var logoFile *os.File
+	var openErr error
 	
-	if err != nil {
-		// Fallback
-		logoPath = filepath.Join("api", "qr-logo.png")
-		logoFile, err = os.Open(logoPath)
+	wd, _ := os.Getwd()
+	possiblePaths := []string{
+		"qr-logo.png",                             // Same dir as handler
+		filepath.Join(wd, "api", "qr-logo.png"),   // Absolute from root
+		filepath.Join(wd, "qr-logo.png"),         // Absolute from current
+		"api/qr-logo.png",                        // Relative from root
+	}
+
+	var foundPath string
+	for _, path := range possiblePaths {
+		logoFile, openErr = os.Open(path)
+		if openErr == nil {
+			foundPath = path
+			break
+		}
 	}
 
 	var finalImg image.Image = qrImg
 
-	if err == nil {
+	if openErr != nil {
+		fmt.Printf("Troubleshooting QR Logo: Failed to open logo after trying %v. Error: %v\n", possiblePaths, openErr)
+	} else {
 		defer logoFile.Close()
-		logoImg, err := png.Decode(logoFile)
-		if err == nil {
+		fmt.Printf("Troubleshooting QR Logo: Successfully opened logo from %s\n", foundPath)
+		
+		logoImg, decodeErr := png.Decode(logoFile)
+		if decodeErr != nil {
+			fmt.Printf("Troubleshooting QR Logo: Failed to decode logo PNG: %v\n", decodeErr)
+		} else {
 			// Resize logo to 70x70 for consistent look
 			resizedLogo := image.NewRGBA(image.Rect(0, 0, 70, 70))
 			draw.BiLinear.Scale(resizedLogo, resizedLogo.Bounds(), logoImg, logoImg.Bounds(), draw.Over, nil)
