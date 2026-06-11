@@ -7,9 +7,65 @@ document.addEventListener('DOMContentLoaded', () => {
   const quickMusicBtn = document.getElementById('music-quick-btn');
   const quickMusicIcon = quickMusicBtn?.querySelector('.music-icon');
   const quickMusicText = quickMusicBtn?.querySelector('.music-status-text');
+  const AUDIO_STATE_KEY = 'rukhsatAudioState';
 
   let isPlaying = false;
   let hasUnlockedAudio = false;
+
+  function saveAudioState() {
+    if (!audio) return;
+
+    try {
+      localStorage.setItem(AUDIO_STATE_KEY, JSON.stringify({
+        currentTime: audio.currentTime || 0,
+        paused: audio.paused,
+      }));
+    } catch (err) {
+      console.warn('Could not persist audio state', err);
+    }
+  }
+
+  function restoreAudioState() {
+    if (!audio) return;
+
+    try {
+      const rawState = localStorage.getItem(AUDIO_STATE_KEY);
+      if (!rawState) return;
+
+      const savedState = JSON.parse(rawState);
+      const savedTime = Number(savedState?.currentTime);
+      const wasPaused = Boolean(savedState?.paused);
+
+      if (Number.isFinite(savedTime) && savedTime > 0) {
+        const applySavedTime = () => {
+          audio.currentTime = savedTime;
+        };
+
+        if (audio.readyState >= 1) {
+          applySavedTime();
+        } else {
+          audio.addEventListener('loadedmetadata', applySavedTime, { once: true });
+        }
+      }
+
+      if (!wasPaused) {
+        const resumeAudio = () => {
+          audio.play().catch(err => {
+            console.warn("Playback prevented", err);
+            updateMusicUI(false);
+          });
+        };
+
+        if (audio.readyState >= 2) {
+          resumeAudio();
+        } else {
+          audio.addEventListener('canplay', resumeAudio, { once: true });
+        }
+      }
+    } catch (err) {
+      console.warn('Could not restore audio state', err);
+    }
+  }
 
   function updateMusicUI(playing) {
     isPlaying = playing;
@@ -26,7 +82,7 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   function tryStartAudio() {
-    if (!audio || hasUnlockedAudio || !audio.paused) {
+    if (!audio || !audio.paused) {
       return;
     }
 
@@ -41,12 +97,20 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   if (audio) {
+    restoreAudioState();
+
     // Sync UI with audio events
     audio.addEventListener('play', () => {
       hasUnlockedAudio = true;
       updateMusicUI(true);
+      saveAudioState();
     });
-    audio.addEventListener('pause', () => updateMusicUI(false));
+    audio.addEventListener('pause', () => {
+      updateMusicUI(false);
+      saveAudioState();
+    });
+    audio.addEventListener('timeupdate', saveAudioState);
+    audio.addEventListener('ended', saveAudioState);
 
     // Reflect the real browser playback state on first paint.
     updateMusicUI(!audio.paused && !audio.ended);
@@ -54,6 +118,8 @@ document.addEventListener('DOMContentLoaded', () => {
     ['pointerdown', 'keydown', 'touchstart'].forEach(eventName => {
       document.addEventListener(eventName, tryStartAudio, { passive: true, once: true });
     });
+
+    window.addEventListener('beforeunload', saveAudioState);
   }
 
   function toggleMusic() {
