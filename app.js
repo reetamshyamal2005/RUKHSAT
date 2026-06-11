@@ -115,9 +115,17 @@ document.addEventListener('DOMContentLoaded', () => {
     // Reflect the real browser playback state on first paint.
     updateMusicUI(!audio.paused && !audio.ended);
 
-    ['pointerdown', 'keydown', 'touchstart'].forEach(eventName => {
-      document.addEventListener(eventName, tryStartAudio, { passive: true, once: true });
+    const audioUnlockEvents = ['pointerdown', 'keydown', 'touchstart', 'wheel'];
+    audioUnlockEvents.forEach(eventName => {
+      window.addEventListener(eventName, tryStartAudio, { passive: true, once: true });
     });
+
+    let hasTriedScrollUnlock = false;
+    window.addEventListener('scroll', () => {
+      if (hasTriedScrollUnlock) return;
+      hasTriedScrollUnlock = true;
+      tryStartAudio();
+    }, { passive: true });
 
     window.addEventListener('beforeunload', saveAudioState);
   }

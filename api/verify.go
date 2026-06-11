@@ -137,7 +137,7 @@ func VerifyHandler(w http.ResponseWriter, r *http.Request) {
 			scheme = "http"
 		}
 		qrUrl := fmt.Sprintf("%s://%s/api/qr?data=%s", scheme, host, uniqueCode)
-		
+
 		qrHtml = fmt.Sprintf(`
 			<div style="margin: 30px auto; padding: 20px; background: #fff; border: 2px solid #7c3d49; border-radius: 8px; max-width: 250px;">
 				<h4 style="margin: 0 0 15px 0; color: #7c3d49; font-family: 'Georgia', serif;">Your Entry Pass</h4>
@@ -166,9 +166,9 @@ func VerifyHandler(w http.ResponseWriter, r *http.Request) {
 		<div class="card">
 			<div class="title">Rukhsat '26 RSVP Registered</div>
 			<p class="text">Hello <strong>%s</strong>,<br><br>Your RSVP response has been successfully registered and verified. Here are your selection details:</p>
-			
+
 			<div class="details-box">
-				<p class="text" style="font-size: 15px; margin: 5px 0;"><strong>Classmate:</strong> %s</p>
+				<p class="text" style="font-size: 15px; margin: 5px 0;"><strong>Name:</strong> %s</p>
 				<p class="text" style="font-size: 15px; margin: 5px 0;"><strong>Attendance:</strong> %s</p>
 				%s
 			</div>
