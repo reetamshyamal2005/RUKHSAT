@@ -344,6 +344,12 @@ document.addEventListener('DOMContentLoaded', () => {
       // Show loader
       statusOverlay?.classList.remove('hidden');
 
+      // Scroll to the top of the rsvp section for better visibility of status/success messages
+      const rsvpSection = document.querySelector('.rsvp-section');
+      if (rsvpSection) {
+        rsvpSection.scrollIntoView({ behavior: 'smooth' });
+      }
+
       const phoneInput = document.getElementById('student-phone-input');
       const phoneVal = phoneInput ? phoneInput.value.trim() : '';
 
