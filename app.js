@@ -149,7 +149,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const heroTypingText = document.getElementById('hero-typing-text');
   if (heroTypingText) {
     const heroMessages = [
-      "Goodbyes are not forever; they are simply 'see you later'",
+      "Goodbyes are not forever, they are simply 'see you later'",
       "A chapter ends, a lifetime of memories remains.",
       "Years will pass, faces may change, but these moments will remain timeless.",
       "From strangers to friends, from friends to family - this is our story.",
