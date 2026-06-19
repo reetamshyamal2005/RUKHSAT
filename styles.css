@@ -248,6 +248,7 @@ body {
     letter-spacing: -1px;
     position: relative;
     flex: 1;
+    text-decoration: none;
 }
 
 .logo::after {
