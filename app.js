@@ -481,4 +481,21 @@ document.addEventListener('DOMContentLoaded', () => {
       link.addEventListener('click', closeDrawer);
     });
   }
+
+  // Bind homepage polaroids to open in fullscreen modal
+  const showcasePolaroids = document.querySelectorAll('.showcase-polaroid');
+  showcasePolaroids.forEach(polaroid => {
+    polaroid.style.cursor = 'pointer';
+    polaroid.addEventListener('click', () => {
+      const img = polaroid.querySelector('img');
+      const caption = polaroid.querySelector('.polaroid-caption');
+      if (img) {
+        openPhotoModal({
+          url: img.src,
+          title: caption ? caption.textContent.trim() : 'Featured Memory',
+          description: ''
+        });
+      }
+    });
+  });
 });
