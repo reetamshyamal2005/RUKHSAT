@@ -524,6 +524,73 @@ func init() {
 					},
 				},
 
+				// Update media metadata in MongoDB
+				"updateMediaMetadata": &graphql.Field{
+					Type: graphql.NewNonNull(mediaType),
+					Args: graphql.FieldConfigArgument{
+						"secret": &graphql.ArgumentConfig{
+							Type: graphql.NewNonNull(graphql.String),
+						},
+						"id": &graphql.ArgumentConfig{
+							Type: graphql.NewNonNull(graphql.ID),
+						},
+						"title": &graphql.ArgumentConfig{
+							Type: graphql.NewNonNull(graphql.String),
+						},
+						"description": &graphql.ArgumentConfig{
+							Type: graphql.String,
+						},
+					},
+					Resolve: func(p graphql.ResolveParams) (interface{}, error) {
+						secret := p.Args["secret"].(string)
+						adminSecret := os.Getenv("ADMIN_SECRET")
+						if adminSecret != "" && secret != adminSecret {
+							return nil, errors.New("unauthorized action: invalid admin secret")
+						}
+
+						mediaIdStr := p.Args["id"].(string)
+						objID, err := primitive.ObjectIDFromHex(mediaIdStr)
+						if err != nil {
+							return nil, errors.New("invalid media id format")
+						}
+
+						title := p.Args["title"].(string)
+						description := ""
+						if desc, ok := p.Args["description"].(string); ok {
+							description = desc
+						}
+
+						collection, err := common.GetCollection("media")
+						if err != nil {
+							return nil, err
+						}
+
+						ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+						defer cancel()
+
+						update := bson.M{
+							"$set": bson.M{
+								"title":       title,
+								"description": description,
+							},
+						}
+
+						_, err = collection.UpdateOne(ctx, bson.M{"_id": objID}, update)
+						if err != nil {
+							return nil, err
+						}
+
+						var updatedMedia common.Media
+						err = collection.FindOne(ctx, bson.M{"_id": objID}).Decode(&updatedMedia)
+						if err != nil {
+							return nil, err
+						}
+
+						common.InvalidateMediaCache()
+						return updatedMedia, nil
+					},
+				},
+
 				// Delete media from MongoDB and Backblaze S3
 				"deleteMedia": &graphql.Field{
 					Type: graphql.NewNonNull(graphql.String),
