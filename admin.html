@@ -156,7 +156,9 @@
         <div class="vignette"></div>
 
         <header class="navbar">
-            <a href="index.html" class="logo">IT Farewell'26</a>
+            <a href="index.html" class="logo"
+                >IT Farewell'26</a
+            >
             <nav class="nav-links">
                 <a href="index.html">Home</a>
                 <a href="photo-vault.html">Photo Vault</a>
@@ -178,7 +180,9 @@
         <!-- Mobile Drawer Overlay -->
         <div class="nav-drawer" id="nav-drawer">
             <div class="drawer-header">
-                <a href="index.html" class="logo">IT Farewell'26</a>
+                <a href="index.html" class="logo"
+                    >IT Farewell'26</a
+                >
                 <button
                     class="drawer-close-btn"
                     id="menu-close"
@@ -244,8 +248,7 @@
                             <input
                                 type="text"
                                 id="media-title"
-                                placeholder="e.g. Canteen Adda"
-                                required
+                                placeholder="e.g. Canteen Adda (Defaults to filename)"
                             />
                         </div>
 
@@ -516,18 +519,18 @@
                             canvas.toBlob(
                                 (blob) => {
                                     if (blob) {
-                                        // Keep original file base name but output as optimized jpeg
+                                        // Keep original file base name but output as optimized webp
                                         const cleanName =
                                             file.name.replace(
                                                 /\.[^/.]+$/,
                                                 "",
-                                            ) + ".jpg";
+                                            ) + ".webp";
                                         const compressedFile =
                                             new File(
                                                 [blob],
                                                 cleanName,
                                                 {
-                                                    type: "image/jpeg",
+                                                    type: "image/webp",
                                                     lastModified:
                                                         Date.now(),
                                                 },
@@ -543,7 +546,7 @@
                                         );
                                     }
                                 },
-                                "image/jpeg",
+                                "image/webp",
                                 quality,
                             );
                         };
@@ -662,10 +665,9 @@
                             document.getElementById(
                                 "admin-secret",
                             ).value;
-                        const title =
-                            document.getElementById(
-                                "media-title",
-                            ).value;
+                        let title = document
+                            .getElementById("media-title")
+                            .value.trim();
                         const type = document.querySelector(
                             'input[name="media-type"]:checked',
                         ).value;
@@ -683,6 +685,13 @@
 
                         if (!file) return;
 
+                        if (!title) {
+                            title = file.name.replace(
+                                /\.[^/.]+$/,
+                                "",
+                            );
+                        }
+
                         progressContainer.style.display =
                             "block";
                         progressFill.style.width = "0%";
@@ -695,7 +704,7 @@
                                 file,
                                 1920,
                                 1920,
-                                0.8,
+                                0.7,
                             )
                                 .then((optimizedFile) => {
                                     startUpload(
