@@ -106,9 +106,7 @@ func init() {
 				"type": &graphql.Field{
 					Type: graphql.NewNonNull(graphql.String),
 				},
-				"category": &graphql.Field{
-					Type: graphql.NewNonNull(graphql.String),
-				},
+
 				"description": &graphql.Field{
 					Type: graphql.NewNonNull(graphql.String),
 				},
@@ -468,11 +466,8 @@ func init() {
 						"type": &graphql.ArgumentConfig{
 							Type: graphql.NewNonNull(graphql.String),
 						},
-						"category": &graphql.ArgumentConfig{
-							Type: graphql.NewNonNull(graphql.String),
-						},
 						"description": &graphql.ArgumentConfig{
-							Type: graphql.NewNonNull(graphql.String),
+							Type: graphql.String,
 						},
 						"duration": &graphql.ArgumentConfig{
 							Type: graphql.String,
@@ -488,8 +483,10 @@ func init() {
 						urlStr := p.Args["url"].(string)
 						title := p.Args["title"].(string)
 						mediaTypeVal := p.Args["type"].(string)
-						category := p.Args["category"].(string)
-						description := p.Args["description"].(string)
+						description := ""
+						if desc, ok := p.Args["description"].(string); ok {
+							description = desc
+						}
 						duration := ""
 						if dur, ok := p.Args["duration"].(string); ok {
 							duration = dur
@@ -512,7 +509,6 @@ func init() {
 							URL:         urlStr,
 							Title:       title,
 							Type:        mediaTypeVal,
-							Category:    category,
 							Description: description,
 							Duration:    duration,
 							CreatedAt:   time.Now(),

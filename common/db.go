@@ -45,7 +45,7 @@ type Media struct {
 	URL         string             `bson:"url" json:"url"`
 	Title       string             `bson:"title" json:"title"`
 	Type        string             `bson:"type" json:"type"`         // photo, video
-	Category    string             `bson:"category" json:"category"` // campus, classroom, fests, hostel, messages
+
 	Description string             `bson:"description" json:"description"`
 	Duration    string             `bson:"duration" json:"duration"`
 	CreatedAt   time.Time          `bson:"createdAt" json:"createdAt"`

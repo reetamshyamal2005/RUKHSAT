@@ -145,8 +145,8 @@
     <div class="logo">IT Farewell'26</div>
     <nav class="nav-links">
       <a href="index.html">Home</a>
-      <!-- <a href="photo-vault.html">Photo Vault</a> -->
-      <!-- <a href="video-vault.html">Video Vault</a> -->
+      <a href="photo-vault.html">Photo Vault</a>
+      <a href="video-vault.html">Video Vault</a>
     </nav>
     <div class="header-actions">
       <button class="hamburger-btn" id="menu-toggle" aria-label="Toggle Menu">
@@ -165,9 +165,8 @@
     </div>
     <nav class="drawer-links">
       <a href="index.html">Home</a>
-      <!-- <a href="photo-vault.html">Photo Vault</a> -->
-      <!-- <a href="video-vault.html">Video Vault</a> -->
-      <a href="rsvp.html">RSVP Desk</a>
+      <a href="photo-vault.html">Photo Vault</a>
+      <a href="video-vault.html">Video Vault</a>
     </nav>
   </div>
 
@@ -186,40 +185,27 @@
             <input type="password" id="admin-secret" placeholder="Enter ADMIN_SECRET..." required>
           </div>
 
-          <div class="form-row">
-            <div class="form-group">
-              <label for="media-title">Memory Title</label>
-              <input type="text" id="media-title" placeholder="e.g. Canteen Adda" required>
-            </div>
-            <div class="form-group">
-              <label for="media-category">Category</label>
-              <select id="media-category" style="padding: 0.8rem; border: 1.5px solid var(--border-sepia); border-radius: 4px; background-color: var(--bg-linen);" required>
-                <option value="campus">Campus Life</option>
-                <option value="classroom">Classroom & Pranks</option>
-                <option value="fests">Fests & Culturals</option>
-                <option value="hostel">Hostel Diaries</option>
-                <option value="messages">Warm Wishes</option>
-              </select>
+          <div class="form-group">
+            <label for="media-title">Memory Title</label>
+            <input type="text" id="media-title" placeholder="e.g. Canteen Adda" required>
+          </div>
+
+          <div class="form-group">
+            <label>Media Type</label>
+            <div style="display: flex; gap: 20px; padding: 0.5rem 0;">
+              <label style="font-size: 0.95rem; font-weight: normal; text-transform: none;"><input type="radio" name="media-type" value="video" checked style="width: auto; margin-right: 8px;"> Video Reel</label>
+              <label style="font-size: 0.95rem; font-weight: normal; text-transform: none;"><input type="radio" name="media-type" value="photo" style="width: auto; margin-right: 8px;"> Photo Snapshot</label>
             </div>
           </div>
 
-          <div class="form-row">
-            <div class="form-group">
-              <label>Media Type</label>
-              <div style="display: flex; gap: 20px; padding: 0.5rem 0;">
-                <label style="font-size: 0.95rem; font-weight: normal; text-transform: none;"><input type="radio" name="media-type" value="video" checked style="width: auto; margin-right: 8px;"> Video Reel</label>
-                <label style="font-size: 0.95rem; font-weight: normal; text-transform: none;"><input type="radio" name="media-type" value="photo" style="width: auto; margin-right: 8px;"> Photo Snapshot</label>
-              </div>
-            </div>
-            <div class="form-group" id="duration-group">
-              <label for="media-duration">Duration (for Videos)</label>
-              <input type="text" id="media-duration" placeholder="e.g. 2:45" value="1:30">
-            </div>
+          <div class="form-group" id="duration-group">
+            <label for="media-duration">Duration (for Videos)</label>
+            <input type="text" id="media-duration" placeholder="e.g. 2:45" value="1:30">
           </div>
 
           <div class="form-group">
             <label for="media-desc">Description</label>
-            <textarea id="media-desc" rows="3" placeholder="Tell the story behind this memory..." required></textarea>
+            <textarea id="media-desc" rows="3" placeholder="Tell the story behind this memory..."></textarea>
           </div>
 
           <div class="form-group">
@@ -248,7 +234,7 @@
                 <th>Preview</th>
                 <th>Title</th>
                 <th>Type</th>
-                <th>Category</th>
+
                 <th>Action</th>
               </tr>
             </thead>
@@ -261,63 +247,7 @@
         </div>
       </div>
 
-      <!-- Invitee Management Card -->
-      <div class="scrapbook-page admin-form-card" style="margin-top: 4rem;">
-        <div class="tape-sticker sticker-top-left"></div>
-        <div class="tape-sticker sticker-top-right"></div>
 
-        <h2 class="admin-title">Invitee & RSVP Registry</h2>
-        <p class="step-instruction" style="text-align: center; margin-bottom: 2rem;">Import graduating seniors list and export real-time RSVP statuses.</p>
-
-        <!-- CSV Export section -->
-        <div class="form-group" style="border-bottom: 1px dashed var(--border-sepia); padding-bottom: 2.5rem; margin-bottom: 2.5rem; text-align: center;">
-          <h3 class="scribble" style="font-size: 1.8rem; color: var(--rose-burgundy); margin-bottom: 0.5rem;">Export Registry</h3>
-          <p style="font-size: 0.9rem; color: var(--text-muted); margin-bottom: 1.5rem;">Download an Excel spreadsheet (.xlsx) showing RSVP choices, email addresses, and verification statuses of all invitees.</p>
-          <button id="admin-export-btn" class="submit-pin-btn" style="width: auto; padding: 0.8rem 2.5rem; display: inline-flex; align-items: center; justify-content: center; gap: 8px;">
-            Export & Download RSVP XLSX
-          </button>
-        </div>
-
-        <!-- CSV Import section -->
-        <form id="admin-import-form" class="guestbook-form">
-          <h3 class="scribble" style="font-size: 1.8rem; color: var(--rose-burgundy); margin-bottom: 0.5rem; text-align: center;">Import Invitees</h3>
-          <p style="font-size: 0.9rem; color: var(--text-muted); text-align: center; margin-bottom: 1.5rem;">Upload a CSV file containing columns: <strong>Name, Email</strong> to batch import seniors into the database. Existing seniors won't be overwritten.</p>
-          
-          <div class="form-group">
-            <label for="csv-file">Choose CSV File</label>
-            <input type="file" id="csv-file" accept=".csv" required style="border: 2px dashed var(--sepia-gold); background: var(--rose-burgundy-light); padding: 1.5rem; text-align: center;">
-          </div>
-
-          <div class="status-text" id="import-status">Ready to import</div>
-          <button type="submit" class="submit-pin-btn" style="margin-top: 1rem;">Import Invitee List</button>
-        </form>
-
-        <hr style="border: 0; border-top: 1px dashed var(--border-sepia); margin: 3rem 0 2rem 0;">
-        <h3 class="scribble" style="font-size: 1.8rem; color: var(--rose-burgundy); margin-bottom: 0.5rem; text-align: center;">Current Invitee List</h3>
-        <p style="font-size: 0.9rem; color: var(--text-muted); text-align: center; margin-bottom: 1rem;">View and manage (delete) registered seniors.</p>
-        <div style="text-align: center;">
-          <button type="button" id="refresh-invitees-btn" class="btn-refresh">Load/Refresh Invitee List</button>
-        </div>
-        <div class="admin-list-container">
-          <table class="admin-table">
-            <thead>
-              <tr>
-                <th>Name</th>
-                <th>Email</th>
-                <th>RSVP</th>
-                <th>Food</th>
-                <th>Read</th>
-                <th>Action</th>
-              </tr>
-            </thead>
-            <tbody id="admin-invitees-tbody">
-              <tr>
-                <td colspan="5" style="text-align: center; color: var(--text-muted); padding: 20px 10px;">Click "Load/Refresh" to view invitees</td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
     </div>
   </section>
 
@@ -386,11 +316,6 @@
       const progressFill = document.getElementById('progress-fill');
       const statusText = document.getElementById('upload-status');
       
-      const importForm = document.getElementById('admin-import-form');
-      const csvFileInput = document.getElementById('csv-file');
-      const importStatusText = document.getElementById('import-status');
-      const exportBtn = document.getElementById('admin-export-btn');
-
       // Toggle duration input based on media type
       document.querySelectorAll('input[name="media-type"]').forEach(radio => {
         radio.addEventListener('change', (e) => {
@@ -402,65 +327,12 @@
         });
       });
 
-      // Handle CSV Export
-      exportBtn.addEventListener('click', () => {
-        const secret = document.getElementById('admin-secret').value;
-        if (!secret) {
-          alert('Please enter your Admin Secret Key in the upload form first.');
-          document.getElementById('admin-secret').focus();
-          return;
-        }
-        window.location.href = '/api/admin/invitees?format=xlsx&secret=' + encodeURIComponent(secret);
-      });
-
-      // Handle CSV Import
-      importForm.addEventListener('submit', (e) => {
-        e.preventDefault();
-        const secret = document.getElementById('admin-secret').value;
-        if (!secret) {
-          alert('Please enter your Admin Secret Key in the upload form first.');
-          document.getElementById('admin-secret').focus();
-          return;
-        }
-
-        const file = csvFileInput.files[0];
-        if (!file) return;
-
-        importStatusText.textContent = 'Importing invitee list...';
-        
-        const formData = new FormData();
-        formData.append('file', file);
-
-        fetch('/api/admin/invitees', {
-          method: 'POST',
-          headers: {
-            'X-Admin-Secret': secret
-          },
-          body: formData
-        })
-        .then(async res => {
-          const data = await res.json();
-          if (!res.ok) throw new Error(data.error || 'Failed to import CSV');
-          return data;
-        })
-        .then(data => {
-          importStatusText.textContent = `Import complete! Successfully imported ${data.imported} invitees.`;
-          alert(`Success! Successfully processed and imported ${data.imported} invitees.`);
-          importForm.reset();
-        })
-        .catch(err => {
-          importStatusText.textContent = 'Import Failed';
-          alert('Error importing invitees: ' + err.message);
-        });
-      });
-
       // Handle Media Upload
       form.addEventListener('submit', (e) => {
         e.preventDefault();
         
         const secret = document.getElementById('admin-secret').value;
         const title = document.getElementById('media-title').value;
-        const category = document.getElementById('media-category').value;
         const type = document.querySelector('input[name="media-type"]:checked').value;
         const duration = type === 'video' ? document.getElementById('media-duration').value : '';
         const description = document.getElementById('media-desc').value;
@@ -541,8 +413,8 @@
                   },
                   body: JSON.stringify({
                     query: `
-                      mutation SaveMediaMetadata($secret: String!, $url: String!, $title: String!, $type: String!, $category: String!, $description: String!, $duration: String) {
-                        saveMediaMetadata(secret: $secret, url: $url, title: $title, type: $type, category: $category, description: $description, duration: $duration) {
+                      mutation SaveMediaMetadata($secret: String!, $url: String!, $title: String!, $type: String!, $description: String, $duration: String) {
+                        saveMediaMetadata(secret: $secret, url: $url, title: $title, type: $type, description: $description, duration: $duration) {
                           id
                         }
                       }
@@ -552,7 +424,6 @@
                       url: authData.publicUrl,
                       title: title,
                       type: type,
-                      category: category,
                       description: description,
                       duration: duration
                     }
@@ -597,14 +468,12 @@
         }
       });
 
-      // Invitee List & Media list refresh and delete logic
+      // Media list refresh and delete logic
       const refreshMediaBtn = document.getElementById('refresh-media-btn');
       const mediaTbody = document.getElementById('admin-media-tbody');
-      const refreshInviteesBtn = document.getElementById('refresh-invitees-btn');
-      const inviteesTbody = document.getElementById('admin-invitees-tbody');
 
       function loadMediaList() {
-        mediaTbody.innerHTML = `<tr><td colspan="5" style="text-align: center; color: var(--text-muted); padding: 20px 10px;">Loading media assets...</td></tr>`;
+        mediaTbody.innerHTML = `<tr><td colspan="4" style="text-align: center; color: var(--text-muted); padding: 20px 10px;">Loading media assets...</td></tr>`;
         
         fetch('/api/graphql', {
           method: 'POST',
@@ -619,7 +488,6 @@
                   url
                   title
                   type
-                  category
                 }
               }
             `
@@ -634,7 +502,7 @@
             const data = result.data.listMedia;
             mediaTbody.innerHTML = '';
             if (data.length === 0) {
-              mediaTbody.innerHTML = `<tr><td colspan="5" style="text-align: center; color: var(--text-muted); padding: 20px 10px;">No media assets found in database.</td></tr>`;
+              mediaTbody.innerHTML = `<tr><td colspan="4" style="text-align: center; color: var(--text-muted); padding: 20px 10px;">No media assets found in database.</td></tr>`;
               return;
             }
 
@@ -652,7 +520,6 @@
                 <td>${previewHtml}</td>
                 <td style="font-weight: 500;">${item.title}</td>
                 <td><span style="text-transform: capitalize;">${item.type}</span></td>
-                <td><span style="text-transform: capitalize;">${item.category}</span></td>
                 <td>
                   <button class="btn-delete" data-id="${item.id}">Delete</button>
                 </td>
@@ -713,138 +580,7 @@
           .catch(err => {
             mediaTbody.innerHTML = `<tr><td colspan="5" style="text-align: center; color: #7c3d49; padding: 20px 10px; font-weight: bold;">Error: ${err.message}</td></tr>`;
           });
-      }
-
-      function loadInviteesList() {
-        const secret = document.getElementById('admin-secret').value;
-        if (!secret) {
-          alert('Please enter your Admin Secret Key in the upload form first to authorize invitee queries.');
-          document.getElementById('admin-secret').focus();
-          return;
-        }
-
-        inviteesTbody.innerHTML = `<tr><td colspan="5" style="text-align: center; color: var(--text-muted); padding: 20px 10px;">Loading invitees...</td></tr>`;
-
-        fetch('/api/graphql', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({
-            query: `
-              query ListInvitees($secret: String!) {
-                listInvitees(secret: $secret) {
-                  id
-                  name
-                  email
-                  rsvpStatus
-                  foodPreference
-                  likesReading
-                  verified
-                }
-              }
-            `,
-            variables: { secret }
-          })
-        })
-          .then(res => {
-            if (!res.ok) throw new Error('Unauthorized or failed to load invitee list');
-            return res.json();
-          })
-          .then(result => {
-            if (result.errors) throw new Error(result.errors[0].message);
-            const data = result.data.listInvitees;
-            inviteesTbody.innerHTML = '';
-            if (data.length === 0) {
-              inviteesTbody.innerHTML = `<tr><td colspan="6" style="text-align: center; color: var(--text-muted); padding: 20px 10px;">No invitees found in database.</td></tr>`;
-              return;
-            }
-
-            data.forEach(item => {
-              const tr = document.createElement('tr');
-              
-              let rsvpBadge = '';
-              if (item.rsvpStatus === 'confirmed') {
-                rsvpBadge = `<span style="background: #e1efe0; color: #388e3c; padding: 2px 6px; border-radius: 4px; font-weight: 500;">Yes</span>`;
-              } else if (item.rsvpStatus === 'declined') {
-                rsvpBadge = `<span style="background: #fbeedb; color: #e65100; padding: 2px 6px; border-radius: 4px; font-weight: 500;">No</span>`;
-              } else {
-                rsvpBadge = `<span style="background: #eaeaea; color: #666; padding: 2px 6px; border-radius: 4px; font-weight: 500;">Pending</span>`;
-              }
-
-              let foodPref = '-';
-              if (item.foodPreference) {
-                foodPref = item.foodPreference === 'veg' ? '🥦 Veg' : '🥩 Non-Veg';
-              }
-
-              let readingPref = '-';
-              if (item.likesReading) {
-                readingPref = item.likesReading === 'yes' ? '<span style="color: #388e3c;">📖 Yes</span>' : '<span style="color: #7c3d49;">✖ No</span>';
-              }
-
-              tr.innerHTML = `
-                <td style="font-weight: 500;">${item.name}</td>
-                <td style="word-break: break-all;">${item.email}</td>
-                <td>${rsvpBadge}</td>
-                <td>${foodPref}</td>
-                <td>${readingPref}</td>
-                <td>
-                  <button class="btn-delete" data-id="${item.id}">Delete</button>
-                </td>
-              `;
-              
-              tr.querySelector('.btn-delete').addEventListener('click', (e) => {
-                const studentId = e.target.getAttribute('data-id');
-                if (!confirm(`Are you sure you want to permanently delete the invitee "${item.name}"?`)) {
-                  return;
-                }
-
-                e.target.disabled = true;
-                e.target.textContent = 'Deleting...';
-
-                fetch('/api/graphql', {
-                  method: 'POST',
-                  headers: {
-                    'Content-Type': 'application/json'
-                  },
-                  body: JSON.stringify({
-                    query: `
-                      mutation DeleteInvitee($secret: String!, $id: ID!) {
-                        deleteInvitee(secret: $secret, id: $id)
-                      }
-                    `,
-                    variables: {
-                      secret: secret,
-                      id: studentId
-                    }
-                  })
-                })
-                .then(async res => {
-                  const result = await res.json();
-                  if (result.errors) throw new Error(result.errors[0].message || 'Failed to delete invitee');
-                  return result.data;
-                })
-                .then(() => {
-                  alert('Invitee deleted successfully!');
-                  loadInviteesList();
-                })
-                .catch(err => {
-                  alert('Error deleting invitee: ' + err.message);
-                  e.target.disabled = false;
-                  e.target.textContent = 'Delete';
-                });
-              });
-
-              inviteesTbody.appendChild(tr);
-            });
-          })
-          .catch(err => {
-            inviteesTbody.innerHTML = `<tr><td colspan="5" style="text-align: center; color: #7c3d49; padding: 20px 10px; font-weight: bold;">Error: ${err.message}</td></tr>`;
-          });
-      }
-
       refreshMediaBtn.addEventListener('click', loadMediaList);
-      refreshInviteesBtn.addEventListener('click', loadInviteesList);
 
       // Mobile Navigation Drawer Toggle
       const menuToggle = document.getElementById('menu-toggle');

@@ -930,7 +930,8 @@ section {
 }
 
 /* 9. Video Vault styles */
-.video-vault-section {
+.video-vault-section,
+.photo-vault-section {
     background-color: var(--rose-burgundy-light);
     border-top: 1px solid var(--border-sepia);
     border-bottom: 1px solid var(--border-sepia);
@@ -952,7 +953,7 @@ section {
     max-width: 600px;
 }
 
-#video-search,
+#media-search,
 #student-search-input {
     width: 100%;
     padding: 1rem 1.5rem 1rem 3rem;
@@ -966,7 +967,7 @@ section {
     transition: all var(--transition-speed) ease;
 }
 
-#video-search:focus,
+#media-search:focus,
 #student-search-input:focus {
     box-shadow: 5px 5px 0 var(--sepia-gold);
     transform: translate(-2px, -2px);

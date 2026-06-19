@@ -18,8 +18,8 @@
     <div class="logo">IT Farewell'26</div>
     <nav class="nav-links">
       <a href="index.html">Home</a>
-      <!-- <a href="photo-vault.html" class="active">Photo Vault</a> -->
-      <!-- <a href="video-vault.html">Video Vault</a> -->
+      <a href="photo-vault.html" class="active">Photo Vault</a>
+      <a href="video-vault.html">Video Vault</a>
     </nav>
     <div class="header-actions">
       <button class="hamburger-btn" id="menu-toggle" aria-label="Toggle Menu">
@@ -38,9 +38,8 @@
     </div>
     <nav class="drawer-links">
       <a href="index.html">Home</a>
-      <!-- <a href="photo-vault.html" class="active">Photo Vault</a> -->
-      <!-- <a href="video-vault.html">Video Vault</a> -->
-      <a href="rsvp.html">RSVP Desk</a>
+      <a href="photo-vault.html" class="active">Photo Vault</a>
+      <a href="video-vault.html">Video Vault</a>
     </nav>
   </div>
 
@@ -48,6 +47,13 @@
     <div class="section-header">
       <h2 class="section-title">The Photo Vault</h2>
       <p class="section-desc">Snapshots of our journey. Captured moments frozen in time.</p>
+    </div>
+
+    <div class="vault-controls">
+      <div class="search-wrapper">
+        <input type="text" id="media-search" placeholder="Search the archives...">
+        <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+      </div>
     </div>
 
     <div class="video-grid" id="photo-grid-container"></div>
@@ -64,7 +70,7 @@
           </div>
         </div>
         <div class="cinema-details">
-          <span class="cinema-badge" id="photo-modal-category">Campus Life</span>
+
           <h3 class="cinema-title" id="photo-modal-title"></h3>
           <p class="cinema-desc" id="photo-modal-desc"></p>
         </div>
@@ -77,10 +83,6 @@
     <p class="footer-subtext">Designed to live forever on the web.</p>
   </footer>
 
-  <a href="rsvp.html" class="floating-rsvp-btn" id="rsvp-float">
-    <span class="rsvp-btn-text">Get your reservation<br>done soon.</span>
-    <div class="rsvp-btn-seal">RSVP</div>
-  </a>
 
   <script src="app.js"></script>
 </body>

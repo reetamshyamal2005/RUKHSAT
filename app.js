@@ -195,7 +195,7 @@ document.addEventListener('DOMContentLoaded', () => {
   // ==========================================
   const gridContainer = document.getElementById('video-grid-container');
   const photoGridContainer = document.getElementById('photo-grid-container');
-  const searchInput = document.getElementById('video-search');
+  const searchInput = document.getElementById('media-search') || document.getElementById('video-search');
   const filterBtns = document.querySelectorAll('.filter-btn');
   
   const CATEGORY_ILLUSTRATIONS = {
@@ -211,7 +211,7 @@ document.addEventListener('DOMContentLoaded', () => {
     gridContainer.innerHTML = '';
     
     if (videosArray.length === 0) {
-      gridContainer.innerHTML = `<div class="no-results-message"><p class="scribble" style="font-size: 2.2rem; text-align: center; grid-column: 1 / -1; width: 100%; color: var(--rose-burgundy);">"No matching reels found..."</p></div>`;
+      gridContainer.innerHTML = `<div class="no-results-message"><p class="scribble" style="font-size: 2.2rem; text-align: center; grid-column: 1 / -1; width: 100%; color: var(--rose-burgundy);">"No videos found"</p></div>`;
       return;
     }
 
@@ -219,12 +219,8 @@ document.addEventListener('DOMContentLoaded', () => {
       const card = document.createElement('div');
       card.className = 'polaroid-card';
       
-      const categoryVector = CATEGORY_ILLUSTRATIONS[video.category] || CATEGORY_ILLUSTRATIONS.campus;
+      const categoryVector = CATEGORY_ILLUSTRATIONS.campus;
       let gradientStyle = 'linear-gradient(135deg, #efe8d4 0%, #dbcaa0 100%)';
-      if (video.category === 'fests') gradientStyle = 'linear-gradient(135deg, #f5eef0 0%, #d5bdc2 100%)';
-      if (video.category === 'classroom') gradientStyle = 'linear-gradient(135deg, #f3eed7 0%, #c4b998 100%)';
-      if (video.category === 'hostel') gradientStyle = 'linear-gradient(135deg, #fcfbf7 0%, #dbdcd0 100%)';
-      if (video.category === 'messages') gradientStyle = 'linear-gradient(135deg, #eaeae0 0%, #bfcab9 100%)';
 
       card.innerHTML = `
         <div class="tape-sticker" style="top: -14px; left: 50%; transform: translateX(-50%) rotate(${index % 2 === 0 ? '-2' : '2'}deg); width: 85px; height: 26px;"></div>
@@ -234,7 +230,7 @@ document.addEventListener('DOMContentLoaded', () => {
           <span class="video-length-badge">${video.duration}</span>
         </div>
         <div class="polaroid-body">
-          <span class="polaroid-cat-tag">${video.category}</span>
+
           <h4 class="polaroid-card-title">${video.title}</h4>
           <p class="polaroid-card-desc">${video.description}</p>
         </div>
@@ -264,7 +260,7 @@ document.addEventListener('DOMContentLoaded', () => {
           <div class="play-overlay" style="opacity: 0; background: rgba(124, 61, 73, 0.4);"><span class="scribble" style="color: white; font-size: 1.5rem;">View Photo</span></div>
         </div>
         <div class="polaroid-body">
-          <span class="polaroid-cat-tag">${photo.category}</span>
+
           <h4 class="polaroid-card-title">${photo.title}</h4>
           <p class="polaroid-card-desc">${photo.description}</p>
         </div>
@@ -322,6 +318,7 @@ document.addEventListener('DOMContentLoaded', () => {
           renderVideos(activeMediaDatabase);
         } else if (photoGridContainer) {
           const photosOnly = data.filter(item => item.type === 'photo');
+          activeMediaDatabase = photosOnly;
           renderPhotos(photosOnly);
         }
       })
@@ -335,6 +332,7 @@ document.addEventListener('DOMContentLoaded', () => {
           }
           renderVideos(activeMediaDatabase);
         } else if (photoGridContainer) {
+          activeMediaDatabase = [];
           renderPhotos([]);
         }
       });
@@ -348,29 +346,16 @@ document.addEventListener('DOMContentLoaded', () => {
   function handleFilterChange() {
     if (!searchInput) return;
     const searchQuery = searchInput.value.toLowerCase();
-    const activeCategoryBtn = document.querySelector('.filter-btn.active');
-    if (!activeCategoryBtn) return;
-    const selectedCategory = activeCategoryBtn.getAttribute('data-category');
-
-    const filteredList = activeMediaDatabase.filter(video => {
-      const matchesSearch = video.title.toLowerCase().includes(searchQuery) || video.description.toLowerCase().includes(searchQuery);
-      const matchesCategory = selectedCategory === 'all' || video.category === selectedCategory;
-      return matchesSearch && matchesCategory;
+    const filteredList = activeMediaDatabase.filter(media => {
+      return media.title.toLowerCase().includes(searchQuery);
     });
-    renderVideos(filteredList);
+    
+    if (gridContainer) renderVideos(filteredList);
+    else if (photoGridContainer) renderPhotos(filteredList);
   }
 
   if (searchInput) searchInput.addEventListener('input', handleFilterChange);
 
-  if (filterBtns) {
-    filterBtns.forEach(btn => {
-      btn.addEventListener('click', () => {
-        filterBtns.forEach(b => b.classList.remove('active'));
-        btn.classList.add('active');
-        handleFilterChange();
-      });
-    });
-  }
 
   // ==========================================
   // 4. FILM THEATER FULLSCREEN MODAL
@@ -406,7 +391,7 @@ document.addEventListener('DOMContentLoaded', () => {
   function openVideoModal(videoData) {
     if (!modal) return;
     pauseBackgroundMusicForVideo();
-    if (modalCategory) modalCategory.textContent = videoData.category;
+
     if (modalTitle) modalTitle.textContent = videoData.title;
     if (modalDesc) modalDesc.textContent = videoData.description;
     if (modalIframe) modalIframe.src = videoData.url;
@@ -438,7 +423,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   function openPhotoModal(photo) {
     if (!photoModal) return;
-    if (photoModalCat) photoModalCat.textContent = photo.category;
+
     if (photoModalTitle) photoModalTitle.textContent = photo.title;
     if (photoModalDesc) photoModalDesc.textContent = photo.description;
     if (photoModalImg) photoModalImg.src = photo.url;

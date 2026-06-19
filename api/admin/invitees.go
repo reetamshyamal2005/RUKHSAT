@@ -212,10 +212,14 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 					likesReadingStr = "Yes"
 				}
 
-				uniqueId := s.UniqueCode
+				timestamp := ""
+				if !s.LastVerificationSent.IsZero() {
+					timestamp = s.LastVerificationSent.Format("02/01/2006 15:04:05")
+				}
 
+				uniqueId := s.UniqueCode
 				row := []interface{}{
-					time.Now().Format("02/01/2006 15:04:05"),
+					timestamp,
 					s.Email,
 					s.Name,
 					"IT",
