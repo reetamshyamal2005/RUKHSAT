@@ -86,7 +86,6 @@ body {
 }
 
 @keyframes grain-dance {
-
     0%,
     100% {
         transform: translate(0, 0);
@@ -135,9 +134,11 @@ body {
     left: 0;
     width: 100%;
     height: 100%;
-    background: radial-gradient(circle,
-            rgba(0, 0, 0, 0) 50%,
-            rgba(45, 41, 38, 0.18) 100%);
+    background: radial-gradient(
+        circle,
+        rgba(0, 0, 0, 0) 50%,
+        rgba(45, 41, 38, 0.18) 100%
+    );
     pointer-events: none;
     z-index: 9998;
 }
@@ -342,7 +343,6 @@ body {
 }
 
 @keyframes pulse-music {
-
     0%,
     100% {
         transform: scale(1);
@@ -364,7 +364,8 @@ body {
     border-radius: 12px;
     box-shadow: 0 15px 35px rgba(0, 0, 0, 0.25);
     z-index: 1000;
-    transition: transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    transition: transform 0.5s
+        cubic-bezier(0.175, 0.885, 0.32, 1.275);
     transform: translateY(0);
 }
 
@@ -634,14 +635,17 @@ body {
     box-shadow: var(--polaroid-shadow);
     position: relative;
     padding: 3.5rem;
-    background-image: radial-gradient(rgba(0, 0, 0, 0.03) 1px,
-            transparent 1px);
+    background-image: radial-gradient(
+        rgba(0, 0, 0, 0.03) 1px,
+        transparent 1px
+    );
     background-size: 20px 20px;
 }
 
 /* 7. Hero Section */
 .hero-section {
-    padding: calc(var(--navbar-height) + 2rem) 4rem 4rem 4rem;
+    padding: calc(var(--navbar-height) + 2rem) 4rem 4rem
+        4rem;
     min-height: 95vh;
     display: flex;
     align-items: center;
@@ -726,7 +730,6 @@ body {
 }
 
 @keyframes blink-cursor {
-
     from,
     to {
         opacity: 1;
@@ -754,7 +757,8 @@ body {
     width: 250px;
     box-shadow: 0 12px 28px rgba(0, 0, 0, 0.15);
     border: 1px solid rgba(0, 0, 0, 0.06);
-    transition: transform var(--transition-speed) cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    transition: transform var(--transition-speed)
+        cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
 
 .showcase-polaroid:hover {
@@ -885,7 +889,6 @@ body {
 }
 
 @keyframes bounce-arrow {
-
     0%,
     20%,
     50%,
@@ -1019,8 +1022,10 @@ section {
 /* Polaroid Video Cards Grid */
 .video-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill,
-            minmax(320px, 1fr));
+    grid-template-columns: repeat(
+        auto-fill,
+        minmax(320px, 1fr)
+    );
     gap: 3.5rem;
     max-width: 1200px;
     margin: 0 auto;
@@ -1114,7 +1119,8 @@ section {
     justify-content: center;
     align-items: center;
     box-shadow: 0 4px 15px zrgba(0, 0, 0, 0.3);
-    transition: transform var(--transition-speed) cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    transition: transform var(--transition-speed)
+        cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
 
 .polaroid-card:hover .play-icon-circle {
@@ -1516,10 +1522,14 @@ section {
 .corkboard-frame {
     background: #cba87c;
     background-image:
-        radial-gradient(rgba(0, 0, 0, 0.15) 15%,
-            transparent 16%),
-        radial-gradient(rgba(0, 0, 0, 0.1) 15%,
-            transparent 16%);
+        radial-gradient(
+            rgba(0, 0, 0, 0.15) 15%,
+            transparent 16%
+        ),
+        radial-gradient(
+            rgba(0, 0, 0, 0.1) 15%,
+            transparent 16%
+        );
     background-size: 30px 30px;
     background-position:
         0 0,
@@ -1532,8 +1542,10 @@ section {
 
 .corkboard-surface {
     display: grid;
-    grid-template-columns: repeat(auto-fill,
-            minmax(200px, 1fr));
+    grid-template-columns: repeat(
+        auto-fill,
+        minmax(200px, 1fr)
+    );
     gap: 20px;
     min-height: 440px;
 }
@@ -1585,9 +1597,11 @@ section {
     transform: translateX(-50%);
     width: 14px;
     height: 14px;
-    background: radial-gradient(circle at 4px 4px,
-            #ff4d4d 20%,
-            #cc0000 80%);
+    background: radial-gradient(
+        circle at 4px 4px,
+        #ff4d4d 20%,
+        #cc0000 80%
+    );
     border-radius: 50%;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
     z-index: 2;
@@ -1730,11 +1744,13 @@ section {
     left: 0;
     right: 0;
     bottom: 0;
-    background: linear-gradient(135deg,
-            rgba(255, 255, 255, 0.03) 0%,
-            rgba(255, 255, 255, 0.03) 35%,
-            rgba(0, 0, 0, 0) 35.1%,
-            rgba(0, 0, 0, 0) 100%);
+    background: linear-gradient(
+        135deg,
+        rgba(255, 255, 255, 0.03) 0%,
+        rgba(255, 255, 255, 0.03) 35%,
+        rgba(0, 0, 0, 0) 35.1%,
+        rgba(0, 0, 0, 0) 100%
+    );
     pointer-events: none;
     z-index: 5;
 }
@@ -2058,7 +2074,10 @@ section {
     }
 
     .video-grid {
-        grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+        grid-template-columns: repeat(
+            auto-fill,
+            minmax(280px, 1fr)
+        );
         gap: 2rem;
     }
 }
@@ -2069,7 +2088,7 @@ section {
         gap: 1rem;
         padding: 0 0.5rem;
     }
-    
+
     .polaroid-card {
         padding: 8px 8px 16px 8px;
     }
@@ -2096,12 +2115,12 @@ section {
     }
 
     .showcase-polaroid {
-        width: 140px;
+        width: 130px;
         padding: 8px 8px 16px 8px;
     }
 
     .polaroid-img-placeholder {
-        height: 130px;
+        height: 100px;
     }
 
     .polaroid-caption {
@@ -2118,7 +2137,8 @@ section {
     }
 
     .cassette-widget.collapsed {
-        transform: translateX(-50%) translateY(calc(100% - 40px));
+        transform: translateX(-50%)
+            translateY(calc(100% - 40px));
     }
 
     .rsvp-card {
@@ -2180,7 +2200,6 @@ section {
         width: 40px;
         height: 40px;
         font-size: 0.75rem;
-    }
     }
 }
 
@@ -2275,8 +2294,10 @@ section {
 .rsvp-card {
     border-radius: 4px;
     padding: 3.5rem 4rem;
-    background-image: radial-gradient(rgba(0, 0, 0, 0.02) 1.5px,
-            transparent 1.5px);
+    background-image: radial-gradient(
+        rgba(0, 0, 0, 0.02) 1.5px,
+        transparent 1.5px
+    );
     background-size: 24px 24px;
 }
 
@@ -2372,7 +2393,8 @@ section {
     border-radius: 50px;
     box-shadow: 2px 2px 0 rgba(0, 0, 0, 0.1);
     margin-top: 10px;
-    animation: pop-in 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    animation: pop-in 0.3s
+        cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
 
 @keyframes pop-in {
@@ -2649,7 +2671,6 @@ section {
 }
 
 @media (max-width: 768px) {
-
     #video-search,
     #student-search-input {
         padding: 0.8rem 1.2rem 0.8rem 2.6rem !important;
