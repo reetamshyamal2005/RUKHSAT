@@ -284,14 +284,14 @@
                                     ><input
                                         type="radio"
                                         name="media-type"
-                                        value="video"
+                                        value="photo"
                                         checked
                                         style="
                                             width: auto;
                                             margin-right: 8px;
                                         "
                                     />
-                                    Video Reel</label
+                                    Photo Snapshot</label
                                 >
                                 <label
                                     style="
@@ -302,13 +302,13 @@
                                     ><input
                                         type="radio"
                                         name="media-type"
-                                        value="photo"
+                                        value="video"
                                         style="
                                             width: auto;
                                             margin-right: 8px;
                                         "
                                     />
-                                    Photo Snapshot</label
+                                    Video Reel</label
                                 >
                             </div>
                         </div>
@@ -316,6 +316,7 @@
                         <div
                             class="form-group"
                             id="duration-group"
+                            style="display: none;"
                         >
                             <label for="media-duration"
                                 >Duration (for
@@ -1013,7 +1014,7 @@
                 <td style="font-weight: 500;">${item.title}</td>
                 <td><span style="text-transform: capitalize;">${item.type}</span></td>
                 <td>
-                  <button class="btn-edit" data-id="${item.id}" data-title="${item.title.replace(/"/g, '&quot;')}" data-desc="${(item.description || '').replace(/"/g, '&quot;')}">Edit</button>
+                  <button class="btn-edit" data-id="${item.id}" data-title="${item.title.replace(/"/g, "&quot;")}" data-desc="${(item.description || "").replace(/"/g, "&quot;")}">Edit</button>
                   <button class="btn-delete" data-id="${item.id}">Delete</button>
                 </td>
               `;
@@ -1122,37 +1123,89 @@
                                         },
                                     );
 
-                                    tr.querySelector(".btn-edit").addEventListener("click", (e) => {
-                                        const btn = e.target;
-                                        const mediaId = btn.getAttribute("data-id");
-                                        const currentTitle = btn.getAttribute("data-title");
-                                        const currentDesc = btn.getAttribute("data-desc");
+                                    tr.querySelector(
+                                        ".btn-edit",
+                                    ).addEventListener(
+                                        "click",
+                                        (e) => {
+                                            const btn =
+                                                e.target;
+                                            const mediaId =
+                                                btn.getAttribute(
+                                                    "data-id",
+                                                );
+                                            const currentTitle =
+                                                btn.getAttribute(
+                                                    "data-title",
+                                                );
+                                            const currentDesc =
+                                                btn.getAttribute(
+                                                    "data-desc",
+                                                );
 
-                                        const secret = document.getElementById("admin-secret").value;
-                                        if (!secret) {
-                                            alert("Please enter your Admin Secret Key in the upload form first.");
-                                            document.getElementById("admin-secret").focus();
-                                            return;
-                                        }
+                                            const secret =
+                                                document.getElementById(
+                                                    "admin-secret",
+                                                ).value;
+                                            if (!secret) {
+                                                alert(
+                                                    "Please enter your Admin Secret Key in the upload form first.",
+                                                );
+                                                document
+                                                    .getElementById(
+                                                        "admin-secret",
+                                                    )
+                                                    .focus();
+                                                return;
+                                            }
 
-                                        const newTitle = prompt("Enter new title for this media:", currentTitle);
-                                        if (newTitle === null) return;
-                                        if (newTitle.trim() === "") {
-                                            alert("Title cannot be empty.");
-                                            return;
-                                        }
+                                            const newTitle =
+                                                prompt(
+                                                    "Enter new title for this media:",
+                                                    currentTitle,
+                                                );
+                                            if (
+                                                newTitle ===
+                                                null
+                                            )
+                                                return;
+                                            if (
+                                                newTitle.trim() ===
+                                                ""
+                                            ) {
+                                                alert(
+                                                    "Title cannot be empty.",
+                                                );
+                                                return;
+                                            }
 
-                                        const newDesc = prompt("Enter new description (optional):", currentDesc);
-                                        if (newDesc === null) return;
+                                            const newDesc =
+                                                prompt(
+                                                    "Enter new description (optional):",
+                                                    currentDesc,
+                                                );
+                                            if (
+                                                newDesc ===
+                                                null
+                                            )
+                                                return;
 
-                                        btn.disabled = true;
-                                        btn.textContent = "Saving...";
+                                            btn.disabled = true;
+                                            btn.textContent =
+                                                "Saving...";
 
-                                        fetch("/api/graphql", {
-                                            method: "POST",
-                                            headers: { "Content-Type": "application/json" },
-                                            body: JSON.stringify({
-                                                query: `
+                                            fetch(
+                                                "/api/graphql",
+                                                {
+                                                    method: "POST",
+                                                    headers:
+                                                        {
+                                                            "Content-Type":
+                                                                "application/json",
+                                                        },
+                                                    body: JSON.stringify(
+                                                        {
+                                                            query: `
                                                   mutation UpdateMediaMetadata($secret: String!, $id: ID!, $title: String!, $description: String) {
                                                     updateMediaMetadata(secret: $secret, id: $id, title: $title, description: $description) {
                                                       id
@@ -1160,18 +1213,51 @@
                                                     }
                                                   }
                                                 `,
-                                                variables: { secret, id: mediaId, title: newTitle.trim(), description: newDesc.trim() }
-                                            })
-                                        }).then(async res => {
-                                            const result = await res.json();
-                                            if (result.errors) throw new Error(result.errors[0].message || "Failed to update media");
-                                            loadMediaList();
-                                        }).catch(err => {
-                                            alert("Error updating media: " + err.message);
-                                            btn.disabled = false;
-                                            btn.textContent = "Edit";
-                                        });
-                                    });
+                                                            variables:
+                                                                {
+                                                                    secret,
+                                                                    id: mediaId,
+                                                                    title: newTitle.trim(),
+                                                                    description:
+                                                                        newDesc.trim(),
+                                                                },
+                                                        },
+                                                    ),
+                                                },
+                                            )
+                                                .then(
+                                                    async (
+                                                        res,
+                                                    ) => {
+                                                        const result =
+                                                            await res.json();
+                                                        if (
+                                                            result.errors
+                                                        )
+                                                            throw new Error(
+                                                                result
+                                                                    .errors[0]
+                                                                    .message ||
+                                                                    "Failed to update media",
+                                                            );
+                                                        loadMediaList();
+                                                    },
+                                                )
+                                                .catch(
+                                                    (
+                                                        err,
+                                                    ) => {
+                                                        alert(
+                                                            "Error updating media: " +
+                                                                err.message,
+                                                        );
+                                                        btn.disabled = false;
+                                                        btn.textContent =
+                                                            "Edit";
+                                                    },
+                                                );
+                                        },
+                                    );
 
                                     mediaTbody.appendChild(
                                         tr,
