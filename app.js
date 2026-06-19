@@ -225,7 +225,7 @@ document.addEventListener('DOMContentLoaded', () => {
       card.innerHTML = `
         <div class="tape-sticker" style="top: -14px; left: 50%; transform: translateX(-50%) rotate(${index % 2 === 0 ? '-2' : '2'}deg); width: 85px; height: 26px;"></div>
         <div class="video-thumbnail-container" style="background: ${gradientStyle}">
-          ${categoryVector}
+          <video src="${video.url}#t=0.1" preload="metadata" muted playsinline style="width: 100%; height: 100%; object-fit: cover;"></video>
           <div class="play-overlay"><div class="play-icon-circle"><svg viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg></div></div>
           <span class="video-length-badge">${video.duration}</span>
         </div>
@@ -288,7 +288,6 @@ document.addEventListener('DOMContentLoaded', () => {
               url
               title
               type
-              category
               description
               duration
               createdAt

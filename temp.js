@@ -1,261 +1,4 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Rukhsat — Admin Memory Console</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@400..700&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Inter:wght@300;400;500;600&family=Playfair+Display:ital,wght@0,400..900;1,400..900&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="styles.css">
-  <style>
-    .admin-container {
-      max-width: 700px;
-      margin: 4rem auto;
-      width: 100%;
-    }
-    .admin-form-card {
-      padding: 3rem;
-    }
-    .admin-title {
-      font-family: var(--font-title);
-      font-size: 2.2rem;
-      color: var(--text-charcoal);
-      text-align: center;
-      margin-bottom: 2rem;
-    }
-    .progress-bar-container {
-      width: 100%;
-      height: 12px;
-      background: var(--sage-green-light);
-      border: 1px solid var(--border-sepia);
-      border-radius: 6px;
-      overflow: hidden;
-      margin: 15px 0;
-      display: none;
-    }
-    .progress-bar-fill {
-      height: 100%;
-      width: 0%;
-      background: var(--rose-burgundy);
-      transition: width 0.2s ease;
-    }
-    .status-text {
-      font-size: 0.9rem;
-      color: var(--text-muted);
-      font-style: italic;
-      text-align: center;
-    }
-    .admin-list-container {
-      margin-top: 2.2rem;
-      max-height: 250px;
-      overflow-y: auto;
-      border: 1.5px solid var(--border-sepia);
-      background: var(--bg-linen);
-      border-radius: 6px;
-      padding: 0.5rem;
-    }
-    .admin-table {
-      width: 100%;
-      border-collapse: collapse;
-      font-size: 0.85rem;
-      text-align: left;
-    }
-    .admin-table th {
-      background: var(--sage-green-light);
-      color: var(--text-charcoal);
-      font-weight: 600;
-      padding: 8px;
-      border-bottom: 2px solid var(--border-sepia);
-      position: sticky;
-      top: 0;
-      z-index: 10;
-    }
-    .admin-table td {
-      padding: 8px;
-      border-bottom: 1px solid var(--border-sepia);
-      vertical-align: middle;
-      color: var(--text-charcoal);
-    }
-    .admin-table tr:hover {
-      background: rgba(124, 61, 73, 0.05);
-    }
-    .btn-delete {
-      background: #7c3d49;
-      color: white;
-      border: none;
-      padding: 4px 8px;
-      border-radius: 4px;
-      cursor: pointer;
-      font-size: 0.75rem;
-      transition: background 0.2s ease;
-    }
-    .btn-delete:hover {
-      background: #c33c54;
-    }
-    .btn-refresh {
-      background: var(--sage-green);
-      color: white;
-      border: none;
-      padding: 6px 14px;
-      border-radius: 4px;
-      cursor: pointer;
-      font-size: 0.85rem;
-      margin-bottom: 1rem;
-      transition: opacity 0.2s ease;
-    }
-    .btn-refresh:hover {
-      opacity: 0.9;
-    }
-    .media-thumbnail-mini {
-      width: 40px;
-      height: 40px;
-      object-fit: cover;
-      border-radius: 4px;
-      border: 1px solid var(--border-sepia);
-    }
-    @media (max-width: 768px) {
-      .admin-container {
-        margin: 2rem auto;
-        padding: 0 10px;
-      }
-      .admin-form-card {
-        padding: 1.5rem 1.2rem;
-      }
-      .admin-title {
-        font-size: 1.8rem;
-        margin-bottom: 1.5rem;
-      }
-      .admin-list-container {
-        margin-top: 1.5rem;
-      }
-      .admin-table th, .admin-table td {
-        padding: 6px;
-        font-size: 0.75rem;
-      }
-    }
-  </style>
-  <script src="security.js"></script>
-</head>
-<body>
-  <div class="film-grain"></div>
-  <div class="vignette"></div>
 
-  <header class="navbar">
-    <div class="logo">IT Farewell'26</div>
-    <nav class="nav-links">
-      <a href="index.html">Home</a>
-      <a href="photo-vault.html">Photo Vault</a>
-      <a href="video-vault.html">Video Vault</a>
-    </nav>
-    <div class="header-actions">
-      <button class="hamburger-btn" id="menu-toggle" aria-label="Toggle Menu">
-        <span></span>
-        <span></span>
-        <span></span>
-      </button>
-    </div>
-  </header>
-
-  <!-- Mobile Drawer Overlay -->
-  <div class="nav-drawer" id="nav-drawer">
-    <div class="drawer-header">
-      <div class="logo">IT Farewell'26</div>
-      <button class="drawer-close-btn" id="menu-close" aria-label="Close Menu">&times;</button>
-    </div>
-    <nav class="drawer-links">
-      <a href="index.html">Home</a>
-      <a href="photo-vault.html">Photo Vault</a>
-      <a href="video-vault.html">Video Vault</a>
-    </nav>
-  </div>
-
-  <section class="admin-section" style="padding-top: 130px; min-height: 85vh;">
-    <div class="admin-container">
-      <div class="scrapbook-page admin-form-card">
-        <div class="tape-sticker sticker-top-left"></div>
-        <div class="tape-sticker sticker-top-right"></div>
-
-        <h2 class="admin-title">Admin Memory Console</h2>
-        <p class="step-instruction" style="text-align: center; margin-bottom: 2rem;">Upload new farewell photos or video reels directly to Backblaze B2.</p>
-
-        <form id="admin-upload-form" class="guestbook-form">
-          <div class="form-group">
-            <label for="admin-secret">Admin Secret Key</label>
-            <input type="password" id="admin-secret" placeholder="Enter ADMIN_SECRET..." required>
-          </div>
-
-          <div class="form-group">
-            <label for="media-title">Memory Title</label>
-            <input type="text" id="media-title" placeholder="e.g. Canteen Adda" required>
-          </div>
-
-          <div class="form-group">
-            <label>Media Type</label>
-            <div style="display: flex; gap: 20px; padding: 0.5rem 0;">
-              <label style="font-size: 0.95rem; font-weight: normal; text-transform: none;"><input type="radio" name="media-type" value="video" checked style="width: auto; margin-right: 8px;"> Video Reel</label>
-              <label style="font-size: 0.95rem; font-weight: normal; text-transform: none;"><input type="radio" name="media-type" value="photo" style="width: auto; margin-right: 8px;"> Photo Snapshot</label>
-            </div>
-          </div>
-
-          <div class="form-group" id="duration-group">
-            <label for="media-duration">Duration (for Videos)</label>
-            <input type="text" id="media-duration" placeholder="Auto-calculated..." readonly style="background: var(--bg-linen); color: var(--text-muted); cursor: not-allowed;">
-          </div>
-
-          <div class="form-group">
-            <label for="media-desc">Description</label>
-            <textarea id="media-desc" rows="3" placeholder="Tell the story behind this memory..."></textarea>
-          </div>
-
-          <div class="form-group">
-            <label for="media-file">Choose File</label>
-            <input type="file" id="media-file" accept="video/*,image/*" required style="border: 2px dashed var(--sepia-gold); background: var(--rose-burgundy-light); padding: 1.5rem; text-align: center;">
-          </div>
-
-          <div class="progress-bar-container" id="progress-container">
-            <div class="progress-bar-fill" id="progress-fill"></div>
-          </div>
-          <div class="status-text" id="upload-status">Ready to upload</div>
-
-          <button type="submit" class="submit-pin-btn" style="margin-top: 1rem;">Upload Memory</button>
-        </form>
-
-        <hr style="border: 0; border-top: 1px dashed var(--border-sepia); margin: 3rem 0 2rem 0;">
-        <h3 class="scribble" style="font-size: 1.8rem; color: var(--rose-burgundy); margin-bottom: 0.5rem; text-align: center;">Active Media Assets</h3>
-        <p style="font-size: 0.9rem; color: var(--text-muted); text-align: center; margin-bottom: 1rem;">View and delete currently active scrapbook photos and videos.</p>
-        <div style="text-align: center;">
-          <button type="button" id="refresh-media-btn" class="btn-refresh">Load/Refresh Media List</button>
-        </div>
-        <div class="admin-list-container">
-          <table class="admin-table">
-            <thead>
-              <tr>
-                <th>Preview</th>
-                <th>Title</th>
-                <th>Type</th>
-
-                <th>Action</th>
-              </tr>
-            </thead>
-            <tbody id="admin-media-tbody">
-              <tr>
-                <td colspan="5" style="text-align: center; color: var(--text-muted); padding: 20px 10px;">Click "Load/Refresh" to view media items</td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
-
-
-    </div>
-  </section>
-
-  <footer class="footer">
-    <p class="footer-text">Rukhsat © Class of 2026. Admin Panel.</p>
-  </footer>
-
-  <script>
     function compressImage(file, maxWidth, maxHeight, quality) {
       return new Promise((resolve, reject) => {
         const reader = new FileReader();
@@ -325,27 +68,6 @@
             durationGroup.style.display = 'flex';
           }
         });
-      });
-
-      // Auto-calculate video duration
-      fileInput.addEventListener('change', (e) => {
-        const file = e.target.files[0];
-        if (!file) return;
-        
-        if (file.type.startsWith('video/')) {
-          document.getElementById('media-duration').value = 'Calculating...';
-          const videoElement = document.createElement('video');
-          videoElement.preload = 'metadata';
-          videoElement.onloadedmetadata = function() {
-            window.URL.revokeObjectURL(videoElement.src);
-            const totalSeconds = Math.round(videoElement.duration);
-            const minutes = Math.floor(totalSeconds / 60);
-            const seconds = totalSeconds % 60;
-            const formatted = `${minutes}:${seconds.toString().padStart(2, '0')}`;
-            document.getElementById('media-duration').value = formatted;
-          };
-          videoElement.src = URL.createObjectURL(file);
-        }
       });
 
       // Handle Media Upload
@@ -459,9 +181,7 @@
                   statusText.textContent = 'Upload Complete! Memory is live.';
                   progressFill.style.background = '#6b7a67';
                   alert('Success! Memory is now live in the vault.');
-                  const savedSecret = document.getElementById('admin-secret').value;
                   form.reset();
-                  document.getElementById('admin-secret').value = savedSecret;
                   durationGroup.style.display = 'flex';
                   progressContainer.style.display = 'none';
                 })
@@ -536,7 +256,7 @@
               if (item.type === 'photo') {
                 previewHtml = `<img src="${item.url}" class="media-thumbnail-mini" alt="Preview">`;
               } else {
-                previewHtml = `<video src="${item.url}#t=0.1" preload="metadata" muted playsinline style="width: 40px; height: 40px; object-fit: cover; border-radius: 4px; border: 1px solid var(--border-sepia);"></video>`;
+                previewHtml = `<div style="width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; background: var(--sage-green-light); border-radius: 4px; border: 1px solid var(--border-sepia); font-size: 1.2rem;">🎬</div>`;
               }
 
               tr.innerHTML = `
@@ -603,8 +323,6 @@
           .catch(err => {
             mediaTbody.innerHTML = `<tr><td colspan="5" style="text-align: center; color: #7c3d49; padding: 20px 10px; font-weight: bold;">Error: ${err.message}</td></tr>`;
           });
-      }
-
       refreshMediaBtn.addEventListener('click', loadMediaList);
 
       // Mobile Navigation Drawer Toggle
@@ -636,6 +354,4 @@
         });
       }
     });
-  </script>
-</body>
-</html>
+  
